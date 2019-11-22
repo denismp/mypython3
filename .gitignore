@@ -1,2 +1,8 @@
-/pylib/Utils/__pychache/
-/pylib/__pychache/
+pylib/Utils/__pycache__/**
+pylib/__pycache__/**
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
