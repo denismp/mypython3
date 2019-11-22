@@ -303,7 +303,7 @@ class RunWasPostThread(Thread):
 #########################################################################
 def main():
     myLogger = MyLogger(LOGFILE="/tmp/RunWasPostThread.log", STDOUT=True, DEBUG=True)
-    mne = 'TRR'
+    mne = 'DMP'
     statusFile = '/tmp/run_was_post.MYDOMAIN'
     jobid = 'SomeAutoSysJobId'
     ampid = 'SomeAmpId'
