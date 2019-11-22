@@ -298,7 +298,7 @@ class ConfigureMNEThread(Thread):
 #########################################################################
 def main():
     myLogger = MyLogger(LOGFILE="/tmp/ConfigureMNEThread.log", STDOUT=True, DEBUG=True)
-    mne = 'TRR'
+    mne = 'DMP'
     statusFile = '/tmp/configureMNE.MYDOMAIN'
     jobid = 'SomeAutoSysJobId'
     ampid = 'SomeAmpId'

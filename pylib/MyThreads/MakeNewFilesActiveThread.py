@@ -308,7 +308,7 @@ class MakeNewFilesActiveThread(Thread):
 #########################################################################
 def main():
     myLogger = MyLogger(LOGFILE="/tmp/MakeNewFilesActiveThread.log", STDOUT=True, DEBUG=True)
-    mne = 'TRR'
+    mne = 'DMP'
     statusFile = '/tmp/stop_all_runable_processes.MYDOMAIN'
     jobid = 'SomeAutoSysJobId'
     ampid = 'SomeAmpId'

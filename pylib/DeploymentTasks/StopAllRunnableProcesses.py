@@ -332,7 +332,7 @@ def main():
 
     jobid = 'SomeAutoSysId'
     ampid = 'SomeAmpId'
-    mne = 'TRR'
+    mne = 'DMP'
     statusFile = '/tmp/stop_all_runable_processes.MYDOMAIN'
     myStopAllRunnableProcesses = StopAllRunnableProcesses(
         jobid,

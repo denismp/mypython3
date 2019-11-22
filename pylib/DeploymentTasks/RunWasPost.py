@@ -315,7 +315,7 @@ def main():
 
     jobid = 'SomeAutoSysId'
     ampid = 'SomeAmpId'
-    mne = 'TRR'
+    mne = 'DMP'
     statusFileHome = '/tmp'
     myRunWasPost = RunWasPost(
         jobid,

@@ -319,7 +319,7 @@ def main():
 
     jobid = 'SomeAutoSysId'
     ampid = 'SomeAmpId'
-    mne = 'TRR'
+    mne = 'DMP'
     # statusFileHome	= '/tmp/stop_all_runable_processes.MYDOMAIN'
     statusFileHome = '/tmp'
     myConfigureWAS = ConfigureWAS(

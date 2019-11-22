@@ -3405,8 +3405,8 @@ def foo():
 
 def main():
 	myLogger	= MyLogger( LOGFILE="/tmp/WasOps.log", STDOUT=True, DEBUG=False )
-	#myObject	= WasOps( logger=myLogger, processCallBack=foo, mnemonic='TRR', entity='app_trr_toolsetTesterB', properties_file='/nfs/dist/dmp/WDT/PROD/bin/v6/ant/build_v6.properties', domain='V6_PROD' )
-	myObject	= WasOps( logger=myLogger, processCallBack=foo, mnemonic='TRR', entity='app_trr_toolsetTesterB', domain='V6_DEV' )
+	#myObject	= WasOps( logger=myLogger, processCallBack=foo, mnemonic='DMP', entity='app_DMP_toolsetTesterB', properties_file='/nfs/dist/dmp/WDT/PROD/bin/v6/ant/build_v6.properties', domain='V6_PROD' )
+	myObject	= WasOps( logger=myLogger, processCallBack=foo, mnemonic='DMP', entity='app_DMP_toolsetTesterB', domain='V6_DEV' )
 	myObject.env.logMySelf( debugOnly=False )
 	myObject.logMySelf( debugOnly=False )
 	myObject.processRequest()

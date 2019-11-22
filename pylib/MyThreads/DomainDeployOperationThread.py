@@ -373,7 +373,7 @@ class DomainDeployOperationThread( Thread ):
 #########################################################################
 def main():
 	myLogger	= MyLogger( LOGFILE="/tmp/DomainDeployOperationThread.log", STDOUT=True, DEBUG=True )
-	mne			= 'TRR'
+	mne			= 'DMP'
 	statusFile	= '/tmp/deploy_DOMAIN_components.MYDOMAIN'
 	statusFilesHome	= '/tmp'
 	jobid		= 'SomeAutoSysJobId'

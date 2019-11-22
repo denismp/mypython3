@@ -303,7 +303,7 @@ class ConfigureWASThread(Thread):
 #########################################################################
 def main():
     myLogger = MyLogger(LOGFILE="/tmp/ConfigureWASThread.log", STDOUT=True, DEBUG=True)
-    mne = 'TRR'
+    mne = 'DMP'
     statusFile = '/tmp'
     jobid = 'SomeAutoSysJobId'
     ampid = 'SomeAmpId'
