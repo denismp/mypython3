@@ -319,7 +319,7 @@ def main():
     myObject = Environment(logger=myLogger)
     myObject.logMySelf(debugOnly=False)
 
-    myObject.closeMe();
+    myObject.closeMe()
 
 
 ##################################################################################
