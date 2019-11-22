@@ -1,5 +1,6 @@
 pylib/Utils/__pycache__/**
 pylib/__pycache__/**
+pylib/XML/__pycache__/**
 
 ### IntelliJ IDEA ###
 .idea

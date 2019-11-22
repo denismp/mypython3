@@ -2844,7 +2844,7 @@ class AppUpdateProperties(MyXML):
                         rc = False
                         self.logIt("pylib.Amp.UpdateProperties.splitDaemonTable(): Invalid domain=" + domain + "\n")
                     if (logErr):
-                        wString = str(myRow) + "\n" # ???
+                        wString = str(myRow) + "\n"  # ???
                         self.logIt(wString)
 
                     ################################################
@@ -5046,8 +5046,10 @@ class AppUpdateProperties(MyXML):
 #########################################################################
 def main():
     myLogger = MyLogger(LOGFILE="/tmp/AppUpdateProperties.log", STDOUT=True, DEBUG=False)
-    myObject = AppUpdateProperties(xml_file="/nfs/home4/trpapp/appd4ec/tmp/QAMP_UAT0000000_090504130000i.xml",
-                                   logger=myLogger);
+    # myObject = AppUpdateProperties(xml_file="/nfs/home4/trpapp/appd4ec/tmp/QAMP_UAT0000000_090504130000i.xml",
+    myObject = AppUpdateProperties(
+        xml_file="/tmp/denis.xml",
+        logger=myLogger);
     # myObject = AppUpdateProperties(xml_file="/nfs/home4/trpapp/appd4ec/tmp/QAMP_UAT0000000_090504130000i.xml");
     # myObject.print_xml()
     # myObject.log_xml()
