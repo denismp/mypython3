@@ -1,0 +1,2 @@
+export WAS_HOME=/apps/WebSphere6/was1/AppServer
+export WAS_EXT_DIRS=$WAS_HOME/lib:$WAS_HOME/etc

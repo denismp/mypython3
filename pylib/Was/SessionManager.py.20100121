@@ -1,0 +1,686 @@
+#!/usr/bin/env jython
+######################################################################################
+##	SessionManager.py
+##
+##	Python module replaces some of the functions in the 
+##	/nfs/dist/dmp/amp/wdt/_resources.jacl
+##	file and makes specialEndPoint resource management object oriented.
+##
+######################################################################################
+##
+##	MODIFICATION HISTORY:
+##	DATE		WHOM				DESCRIPTION
+##	01/19/2010	Denis M. Putnam		Created.
+######################################################################################
+import os, sys
+import re
+import socket
+import random
+import time
+from pylib.Utils.MyLogger import *
+from pylib.Utils.MyUtils import *
+from pylib.Was.AdminClient import *
+from pylib.Was.ConfigService import *
+from pylib.Was.AttributeUtils import *
+from pylib.Was.TemplateListManager import *
+from pylib.Was.JDBCProviderManager import *
+from java.lang import NullPointerException
+from java.lang import NoClassDefFoundError
+from javax.management import InstanceNotFoundException
+from javax.management import MalformedObjectNameException
+from javax.management import ObjectName
+from javax.management import AttributeList
+from javax.management import Attribute
+from jarray import array
+from java.lang import String
+from java.lang import Object
+import java.util.ArrayList
+from java.util import ArrayList
+
+import com.ibm.websphere.security.WebSphereRuntimePermission as WebSphereRuntimePermission
+import com.ibm.websphere.security.auth.WSLoginFailedException as WSLoginFailedException
+import com.ibm.ws.security.util.InvalidPasswordDecodingException as InvalidPasswordDecodingException
+import com.ibm.websphere.management.exception.ConnectorException as ConnectorException
+
+class SessionManager( AttributeUtils ):
+	"""
+    SessionManager class that contains SessionManager management methods.
+	"""
+
+	##################################################################################
+	#	__init__()
+	#
+	#	DESCRIPTION:
+	#		Class initializer.
+	#
+	#	PARAMETERS:
+	#		See below.
+	#
+	#	RETURN:
+	#		An instance of this class
+	##################################################################################
+	def __init__(
+				self, 
+				adminClient,
+				configService,
+				templateListManager,
+				scope,
+				logger=None
+		):
+		"""Class Initializer.
+           PARAMETERS:
+               adminClient   - instance of the pylib.Was.AdminClient class.
+               configService - instance of the pylib.Was.ConfigService class.
+               templateListManager - instance of the pylib.Was.TemplateListManager class.
+			   scope         - Something like one of:
+                                  "Cell=ServicesA:Node=node_ServicesA_01:Server=as_was7test_01"
+                                  "Cell=ServicesA:Node=node_ServicesA_01"
+                                  "Node=node_ServicesA_01:Server=as_was7test_01"
+                                  "Node=node_ServicesA_01"
+                                  "Cell=ServicesA:Cluster=cl_was7test_a"
+                                  "Cluster=cl_was7test_a"
+               logger        - instance of the MyLogger class.
+
+           RETURN:
+               An instance of this class
+		"""
+
+		self.adminClient			= adminClient
+		self.configService			= configService
+		self.templateListManager	= templateListManager
+		self.logger					= logger
+		AttributeUtils.__init__( self, configService, scope, type='SessionManager', logger=self.logger )
+		self.logMySelf()
+		self.validate()
+
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	validate()
+	#
+	#	DESCRIPTION:
+	#		Validate the parameters and calculated values.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	#		True for valid.
+	##################################################################################
+	def validate(self):
+		"""Validate the parameters and calculated values.
+           PARAMETERS:
+
+           RETURN:
+               True for valid or False.
+		"""
+		rVal = False
+		#return rVal
+		return True
+
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	logMySelf()
+	#
+	#	DESCRIPTION:
+	#		Log myself.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	##################################################################################
+	def logMySelf(self, debugOnly=True):
+		"""Log myself.
+        PARMETERS:
+            debugOnly is either True or False.  A value of True will only log if the
+            logger's debug flag is set.
+        """
+
+		myAttrs = dir( self )
+		for attr in myAttrs:
+			try:
+				if re.search( 'attributes',  attr ): continue
+				if re.search( '__doc__',  attr ): continue
+				if re.search( '__module__',  attr ): continue
+				if re.search( 'bound method', str( getattr( self, attr ) ) ): continue
+				if re.search( 'instance', str( getattr( self, attr ) ) ): continue
+				if( debugOnly == True ):
+					self.debug( __name__ + ".logMySelf(): " + str( attr ) + "=" + str( getattr( self, attr ) ) + "\n" )
+				else:
+					self.logIt( __name__ + ".logMySelf(): " + str( attr ) + "=" + str( getattr( self, attr ) ) + "\n" )
+				#Endif
+			except AttributeError, e:
+				continue
+			#Endtry
+		#Endfor
+
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	logIt()
+	#
+	#	DESCRIPTION:
+	#		Write a message to the log and possibly stdout.
+	#
+	#	PARAMETERS:
+	#		msg - what you want to log.
+	#
+	#	RETURN:
+	##################################################################################
+	def logIt(self, msg):
+		"""Write a message to the log and possibly stdout."""
+
+		if( self.logger ): self.logger.logIt( msg )
+
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	debug()
+	#
+	#	DESCRIPTION:
+	#		Write a message to the log and possibly stdout.
+	#
+	#	PARAMETERS:
+	#		msg - what you want to log.
+	#
+	#	RETURN:
+	#################################################################################
+	def debug(self, msg):
+		"""Write a message to the log and possibly stdout."""
+
+		if( self.logger ): self.logger.debug( msg )
+
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	closeMe()
+	#
+	#	DESCRIPTION:
+	#		Closes this instance.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	##################################################################################
+	def closeMe(self):
+		"""Closes this instance."""
+		self.debug( __name__ + ".closeMe(): called.\n" )
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	__del__()
+	#
+	#	DESCRIPTION:
+	#		Closes this instance.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	##################################################################################
+	def __del__(self):
+		"""Closes this instance."""
+		#self.logIt( __name__ + ".__del__(): called.\n" )
+		self.closeMe()
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	saveSession()
+	#
+	#	DESCRIPTION:
+	#		Save the current WebSphere session.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	##################################################################################
+	def saveSession(self,overwriteOnConflict=False):
+		"""Save the current WebSphere sesssion.
+		   PARAMETERS:
+		       overwriteOnConflict -- default is False
+		   RETURN:
+		"""
+		################################################################
+		#	Log the parameters.
+		################################################################
+		self.debug( __name__ + ".saveSession(): called.\n" )
+		self.debug( __name__ + ".saveSession(): overwriteOnConflict=" + str( overwriteOnConflict ) + ".\n" )
+		self.logIt( __name__ + ".saveSession(): Saving session=" + str( self.configService.session.toString() ) + ".\n" )
+		self.configService.save( self.configService.session, overwriteOnConflict )
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	modifySessionDatabasePersistence()
+	#
+	#	DESCRIPTION:
+	#		Modify the sessionDatabasePersistence attributes.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	##################################################################################
+	def modifySessionDatabasePersistence( 
+							self, 
+							sessionManagerConfigObject,
+							sessionManagerAttributeList,
+							datasourceJNDIName='jdbc/Sessions',
+							db2RowSize='ROW_SIZE_4KB',
+							userId='db2admin',
+							password='db2admin',
+							tableSpaceName=''
+							):
+		"""Modify the SessionManager attributes.
+		   PARAMETERS:
+			   sessionManagerConfigObject      -- javax.management.ObjectName instance of the SessionManager.
+			   sessionManagerAttirbuteList     -- javax.management.AttributeList instance of the SessionManager.
+			   datasourceJNDIName              -- datasource JNDIName.  Something like 'jdbc/Sessions' or None.
+			   db2RowSize                      -- Something like 'ROW_SIZE_4KB', 'ROW_SIZE_32KB', 'ROW_SIZE_16KB', 'ROW_SIZE_8KB'.
+			   userId                          -- user id.
+			   password                        -- password.
+			   tableSpaceName                  -- table space name to persist to.
+		   RETURN:
+		       True if successful, or False.
+		"""
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): sessionManagerConfigObject=" + str( sessionManagerConfigObject ) + "\n" )
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): sessionManagerAttributeList=" + str( sessionManagerAttributeList ) + "\n" )
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): datasourceJNDIName=" + str( datasourceJNDIName ) + "\n" )
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): db2RowSize=" + str( db2RowSize ) + "\n" )
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): userId=" + str( userId ) + "\n" )
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): password=" + str( password ) + "\n" )
+		self.debug( __name__ + ".modifySessionDatabasePersistence(): tableSpaceName=" + str( tableSpaceName ) + "\n" )
+
+		###########################################################################
+		#	Get the attributes for the sessionDatabasePersistence.
+		#	The AttributeList for sessionDatabasePersistence has a 
+		#	javax.management.ObjectName that we need to get a hold of.
+		###########################################################################
+		myargs	= array( ['sessionDatabasePersistence'], java.lang.String )
+		sessionDbAttrs	= self.configService.getAttributes( self.configService.session, sessionManagerConfigObject, myargs, False )
+		sessionDbPersistenceObject = None
+		for dbAttr in sessionDbAttrs:
+			dbName = dbAttr.getName()
+			dbValue= dbAttr.getValue()
+			############################################################################
+			#	If the name of the attribute is sessionDatabasePersistence, the capture
+			#	the value because it is the ObjectName instance the we need.
+			############################################################################
+			if dbName == 'sessionDatabasePersistence':
+				sessionDbPersistenceObject = dbAttr.getValue()
+			self.debug( __name__ + ".".modifySessionDatabasePersistence(): dbAttr.getName()=" + str( dbName ) + "\n" )
+			self.debug( __name__ + ".".modifySessionDatabasePersistence(): dbAttr.getValue()=" + str( dbValue ) + "\n" )
+		#Endfor
+
+		#####################################################################
+		#	Now get the attributes list for the sessionDbPersistenceObject.
+		#####################################################################
+		dbAttrs = self.configService.getAttributes( self.configService.session, sessionDbPersistenceObject, None, False )
+
+		#####################################################################
+		#	Set the attributes to the parameters that were passed in.
+		#####################################################################
+		self.debug( __name__ + ".".modifySessionDatabasePersistence(): BEFORE dbAttrs=" + str( dbAttrs ) + "\n" )
+		self.debug( __name__ + ".".modifySessionDatabasePersistence(): BEFORE dbAttrs type=" + str( type( dbAttrs ) ) + "\n" )
+		self.debug( __name__ + ".".modifySessionDatabasePersistence(): dbAttrs=" + str( dbAttrs ) + "\n" )
+		self.debug( __name__ + ".".modifySessionDatabasePersistence(): dbAttrs type=" + str( type( dbAttrs ) ) + "\n" )
+		self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'datasourceJNDIName', str( datasourceJNDIName ) )
+		self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'db2RowSize', str( db2RowSize ) )
+		self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'userId', str( userId ) )
+		self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'password', str( password ) )
+		self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'tableSpaceName', str( tableSpaceName ) )
+		self.debug( __name__ + ".".modifySessionDatabasePersistence(): AFTER dbAttrs=" + str( dbAttrs ) + "\n" )
+
+		####################################################################
+		#	Save the dbAttrs to the current session.
+		####################################################################
+		self.configService.setAttributes( self.configService.session, sessionDbPersistenceObject, dbAttrs )
+
+		####################################################################
+		#	Go back and get the sessionDbPersistenceObject attributes from
+		#	the session that we just saved them to.
+		####################################################################
+		dbAttrs = self.configService.getAttributes( self.configService.session, sessionDbPersistenceObject, None, False )
+
+		####################################################################
+		#	Now add the sessionDatabasePersistence attributes to the
+		#	SessionManager attributes.
+		####################################################################
+		self.configService.configServiceHelper.setAttributeValue( sessionManagerAttirbuteList, 'sessionDatabasePersistence', dbAttrs )
+
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+	##################################################################################
+	#	modifySessionManager()
+	#
+	#	DESCRIPTION:
+	#		Modify the SessionManager attributes.
+	#
+	#	PARAMETERS:
+	#
+	#	RETURN:
+	##################################################################################
+	def modifySessionManager( 
+							self, 
+							enable=True,
+							enableUrlRewriting=False,
+							enableCookies=True,
+							enableSSLTracking=False,
+							enableProtocolSwitchRewriting=False,
+							sessionPersistenceMode='NONE',
+							enableSecurityIntegration=False,
+							allowSerializedSessionAccess=False,
+							maxWaitTime=5,
+							accessSessionOnTimeout=True,
+							datasourceJNDIName='jdbc/Sessions',
+							db2RowSize='ROW_SIZE_4KB',
+							userId='db2admin',
+							password='db2admin',
+							tableSpaceName=''
+							):
+		"""Modify the SessionManager attributes.
+		   PARAMETERS:
+		       enable                          -- enable session management. True or False.
+		       enableUrlRewriting              -- enable URL rewriting. True or False.
+		       enableCookies                   -- enable cookies. True or False.
+		       enableSSLTracking               -- enable SSL ID tracking. True or False.
+		       enableProtocolSwitchRewriting   -- enable. True or False.
+		       sessionPersistenceMode          -- defaults to 'NONE', 'DATABASE', or 'DATA_REPLICATION'.
+		       enableSecurityIntegration       -- enable. True or False.
+		       allowSerializedSessionAccess    -- enable. True or False.
+		       maxWaitTime                     -- default is 5 seconds.
+		       accessSessionOnTimeout          -- enable. True or False.
+			   datasourceJNDIName              -- datasource JNDIName.  Something like 'jdbc/Sessions' or None.
+			   db2RowSize                      -- Something like 'ROW_SIZE_4KB', 'ROW_SIZE_32KB', 'ROW_SIZE_16KB', 'ROW_SIZE_8KB'.
+			   userId                          -- user id.
+			   password                        -- password.
+			   tableSpaceName                  -- table space name to persist to.
+		   RETURN:
+		       True if successful, or False.
+		"""
+		self.debug( __name__ + ".modifySessionManager(): enable=" + str( enable ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): enableUrlRewriting=" + str( enableUrlRewriting ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): enableCookies=" + str( enableCookies ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): enableSSLTracking=" + str( enableSSLTracking ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): enableProtocolSwitchRewriting=" + str( enableProtocolSwitchRewriting ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): sessionPersistenceMode=" + str( sessionPersistenceMode ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): enableSecurityIntegration=" + str( enableSecurityIntegration ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): allowSerializedSessionAccess=" + str( allowSerializedSessionAccess ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): maxWaitTime=" + str( maxWaitTime ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): accessSessionOnTimeout=" + str( accessSessionOnTimeout ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): datasourceJNDIName=" + str( datasourceJNDIName ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): db2RowSize=" + str( db2RowSize ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): userId=" + str( userId ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): password=" + str( password ) + "\n" )
+		self.debug( __name__ + ".modifySessionManager(): tableSpaceName=" + str( tableSpaceName ) + "\n" )
+
+		rVal = True
+		if datasourceJNDIName is None or datasourceJNDIName == '':
+			self.debug( __name__ + ".modifySessionManager(): datasourceJNDIName is invalid=" + str( datasourceJNDIName ) + "\n" )
+			return False
+		#Endif
+
+		############################################################
+		#	For all our configuration Objects within the scope,
+		#	modify the attributes.  Hopefully there is only one
+		#	configuration Object.
+		############################################################
+		for configObject in self.configObjects:
+
+			##########################################################################
+			#	Do the scalar attributes first.
+			##########################################################################
+			self.debug( __name__ + ".modifySessionManager(): configObject=" + str( configObject ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): configObject type=" + str( type( configObject ) ) + "\n" )
+			myAttrs	= self.configService.getAttributes( self.configService.session, configObject, None, True )
+			self.debug( __name__ + ".modifySessionManager(): BEFORE myAttrs=" + str( myAttrs ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): BEFORE myAttrs type=" + str( type( myAttrs ) ) + "\n" )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'enable', java.lang.Boolean( enable ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'enableUrlRewriting', java.lang.Boolean( enableUrlRewriting ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'enableCookies', java.lang.Boolean( enableCookies ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'enableSSLTracking', java.lang.Boolean( enableSSLTracking ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'enableProtocolSwitchRewriting', java.lang.Boolean( enableProtocolSwitchRewriting ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'sessionPersistenceMode', str( sessionPersistenceMode ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'enableSecurityIntegration', java.lang.Boolean( enableSecurityIntegration ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'allowSerializedSessionAccess', java.lang.Boolean( allowSerializedSessionAccess ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'maxWaitTime', int( maxWaitTime ) )
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'accessSessionOnTimeout', java.lang.Boolean( accessSessionOnTimeout ) )
+			self.debug( __name__ + ".modifySessionManager(): AFTER myAttrs=" + str( myAttrs ) + "\n" )
+
+			###########################################################################
+			#	Get the attributes for the sessionDatabasePersistence.
+			#	The AttributeList for sessionDatabasePersistence has a 
+			#	javax.management.ObjectName that we need to get a hold of.
+			###########################################################################
+			myargs	= array( ['sessionDatabasePersistence'], java.lang.String )
+			sessionDbAttrs	= self.configService.getAttributes( self.configService.session, configObject, myargs, False )
+			sessionDbPersistenceObject = None
+			for dbAttr in sessionDbAttrs:
+				dbName = dbAttr.getName()
+				dbValue= dbAttr.getValue()
+				############################################################################
+				#	If the name of the attribute is sessionDatabasePersistence, the capture
+				#	the value because it is the ObjectName instance the we need.
+				############################################################################
+				if dbName == 'sessionDatabasePersistence':
+					sessionDbPersistenceObject = dbAttr.getValue()
+				self.debug( __name__ + ".modifySessionManager(): dbAttr.getName()=" + str( dbName ) + "\n" )
+				self.debug( __name__ + ".modifySessionManager(): dbAttr.getValue()=" + str( dbValue ) + "\n" )
+			#Endfor
+
+			#####################################################################
+			#	Now get the attributes list for the sessionDbPersistenceObject.
+			#####################################################################
+			dbAttrs = self.configService.getAttributes( self.configService.session, sessionDbPersistenceObject, None, False )
+
+			#####################################################################
+			#	Set the attributes to the parameters that were passed in.
+			#####################################################################
+			self.debug( __name__ + ".modifySessionManager(): BEFORE dbAttrs=" + str( dbAttrs ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): BEFORE dbAttrs type=" + str( type( dbAttrs ) ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): dbAttrs=" + str( dbAttrs ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): dbAttrs type=" + str( type( dbAttrs ) ) + "\n" )
+			self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'datasourceJNDIName', str( datasourceJNDIName ) )
+			self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'db2RowSize', str( db2RowSize ) )
+			self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'userId', str( userId ) )
+			self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'password', str( password ) )
+			self.configService.configServiceHelper.setAttributeValue( dbAttrs, 'tableSpaceName', str( tableSpaceName ) )
+			self.debug( __name__ + ".modifySessionManager(): AFTER dbAttrs=" + str( dbAttrs ) + "\n" )
+
+			####################################################################
+			#	Save the dbAttrs to the current session.
+			####################################################################
+			self.configService.setAttributes( self.configService.session, sessionDbPersistenceObject, dbAttrs )
+
+			####################################################################
+			#	Go back and get the sessionDbPersistenceObject attributes from
+			#	the session that we just saved them to.
+			####################################################################
+			dbAttrs = self.configService.getAttributes( self.configService.session, sessionDbPersistenceObject, None, False )
+
+			####################################################################
+			#	Now add the sessionDatabasePersistence attributes to the
+			#	SessionManager attributes.
+			####################################################################
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'sessionDatabasePersistence', dbAttrs )
+
+			####################################################################
+			#	Do the defaultCookieSettings.
+			####################################################################
+			myargs	= array( ['defaultCookieSettings'], java.lang.String )
+			defaultCookieSettings	= self.configService.getAttributes( self.configService.session, configObject, myargs, False )
+			defaultCookieSettingsObject = None
+			for cAttr in defaultCookieSettings:
+				cName = cAttr.getName()
+				cValue= cAttr.getValue()
+				############################################################################
+				#	If the name of the attribute is defaultCookieSettings, the capture
+				#	the value because it is the ObjectName instance the we need.
+				############################################################################
+				if cName == 'defaultCookieSettings':
+					defaultCookieSettingsObject = cAttr.getValue()
+				self.debug( __name__ + ".modifySessionManager(): cAttr.getName()=" + str( cName ) + "\n" )
+				self.debug( __name__ + ".modifySessionManager(): cAttr.getValue()=" + str( cValue ) + "\n" )
+			#Endfor
+
+			#####################################################################
+			#	Now get the attributes list for the defaultCookieSettingsObject.
+			#####################################################################
+			cookieAttrs	= self.configService.getAttributes( self.configService.session, defaultCookieSettingsObject, None, False )
+
+			#####################################################################
+			#	Set the attributes to the parameters that were passed in.
+			#	Right now we have the values hard coded.  This may change in
+			#	the future.
+			#####################################################################
+			self.debug( __name__ + ".modifySessionManager(): BEFORE cookieAttrs=" + str( cookieAttrs ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): BEFORE cookieAttrs type=" + str( type( cookieAttrs ) ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): cookieAttrs=" + str( cookieAttrs ) + "\n" )
+			self.debug( __name__ + ".modifySessionManager(): cookieAttrs type=" + str( type( cookieAttrs ) ) + "\n" )
+			self.configService.configServiceHelper.setAttributeValue( cookieAttrs, 'name', str( 'JSESSIONID' ) )
+			self.configService.configServiceHelper.setAttributeValue( cookieAttrs, 'domain', str( '' ) )
+			self.configService.configServiceHelper.setAttributeValue( cookieAttrs, 'maximumAge', int( -1 ) )
+			self.configService.configServiceHelper.setAttributeValue( cookieAttrs, 'path', str( '/' ) )
+			self.configService.configServiceHelper.setAttributeValue( cookieAttrs, 'secure', java.lang.Boolean( False ) )
+			self.debug( __name__ + ".modifySessionManager(): AFTER cookieAttrs=" + str( cookieAttrs ) + "\n" )
+
+			####################################################################
+			#	Save the cookieAttrs to the current session.
+			####################################################################
+			self.configService.setAttributes( self.configService.session, defaultCookieSettingsObject, cookieAttrs )
+
+			####################################################################
+			#	Go back and get the defaultCookieSettingsObject attributes from
+			#	the session that we just saved them to.
+			####################################################################
+			cookieAttrs = self.configService.getAttributes( self.configService.session, defaultCookieSettingsObject, None, False )
+
+			####################################################################
+			#	Now add the defaultCookieSettings attributes to the
+			#	SessionManager attributes.
+			####################################################################
+			self.configService.configServiceHelper.setAttributeValue( myAttrs, 'defaultCookieSettings', cookieAttrs )
+
+			self.configService.setAttributes( self.configService.session, configObject, myAttrs )
+		#Endfor
+
+		if rVal: self.refresh()
+		return rVal
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+######################################################################################
+#Endclass
+######################################################################################
+
+#########################################################################
+#	For testing.
+#########################################################################
+def main():
+	myLogger	= MyLogger( LOGFILE="/tmp/SessionManager.log", STDOUT=True, DEBUG=True )
+	#myLogger	= MyLogger( LOGFILE="/tmp/SessionManager.log", STDOUT=True, DEBUG=False )
+	adminObject	= AdminClient( logger=myLogger, hostname="dilabvirt31-v1" )
+	myLogger.logIt( "main(): Started...\n" )
+	try:
+		myclient	= adminObject.createSOAPDefault()
+		results		= adminObject.getResults()
+		#adminObject.logResults( results )
+	except Exception, e:
+		myLogger.logIt( "main(): " + str(e) + "\n" )
+		myLogger.logIt( "main(): Unable to connect to the AdminClient().  Make sure that the WebSphere Server Manager is running.\n" )
+		raise
+	#Endtry
+	cellName	= "ServicesA"
+	nodeName	= "node_ServicesA_01"
+	serverName	= "as_ServicesA_a01"
+	clusterName	= "cl_ServicesA_a"
+	jdbcProvider= "OracleJdbcDriverXA"
+	dataSource	= "ForOracleXAJF"
+	template	= "DataSoure_ora_6"
+
+	#myscope			= "Node=" + nodeName + ":ServerIndex:ServerEntry=" + serverName
+	#myscope			= "Node=" + nodeName + ":ServerIndex:ServerEntry=" + serverName
+	#myscope			= "Cell=" + cellName + ":Node=" + nodeName + ":Server=" + serverName
+	myscope				= "Node=" + nodeName + ":Server=" + serverName
+	configService 		= ConfigService( adminClient=myclient, logger=myLogger )
+	templateListManager	= TemplateListManager( configService, type="SessionManager", logger=myLogger )
+	mySessionManager	= SessionManager( adminObject, configService, templateListManager, scope=myscope, logger=myLogger)
+
+	for mylist in mySessionManager.attributesList:
+		mySessionManager.deepLogOfAttributes( mylist )
+	#Endfor
+	for mylist in mySessionManager.attributesList:
+		mySessionManager.deepPrintOfAttributes( mylist )
+	#Endfor
+	try:
+		fileName = "/tmp/denis.txt"
+		FH = open( fileName, "w" )
+		for mylist in mySessionManager.attributesList:
+			mySessionManager.deepWriteOfAttributes( mylist, FH )
+		#Endfor
+		FH.close()
+	except Exception, e:
+		myLogger.logIt( "main(): " + str( e ) + "\n" )
+		raise
+	#Endtry
+
+	mySessionManager.writeAttributes( "/nfs/home4/dmpapp/appd4ec/tmp/Sessions.tsv" )
+
+	########################################################
+	#	Create the data source.
+	########################################################
+	endPointName	= "DENIS_ENDPOINT"
+	host			= 'denishost'
+	port			= '9999'
+	rc = mySessionManager.modifySessionManager(
+							enable=True,
+							enableUrlRewriting=True,
+							enableCookies=True,
+							enableSSLTracking=True,
+							enableProtocolSwitchRewriting=True,
+							sessionPersistenceMode='DATABASE',
+							enableSecurityIntegration=True,
+							allowSerializedSessionAccess=True,
+							maxWaitTime=9,
+							accessSessionOnTimeout=True,
+							datasourceJNDIName='jdbc/Sessions',
+							db2RowSize='ROW_SIZE_4KB',
+							userId='db2admin',
+							password='db2admin',
+							tableSpaceName='DENIS_SPACE'
+							)
+
+	if rc: mySessionManager.saveSession( False )
+
+	for mylist in mySessionManager.attributesList:
+		mySessionManager.deepLogOfAttributes( mylist )
+	#Endfor
+	configService.closeMe()
+	mySessionManager.closeMe()
+	adminObject.closeMe()
+	myLogger.logIt( "main(): Finished.\n" )
+	##################################################################################
+	#Enddef
+	##################################################################################
+
+######################################################################################
+#   End
+######################################################################################
+if __name__ == "__main__":
+	main()
