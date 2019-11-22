@@ -1,4 +1,4 @@
-#!/usr/bin/env jython
+#!/usr/bin/env python
 ######################################################################################
 ##	DomainDeployOperationThread.py
 ##
@@ -169,7 +169,7 @@ class DomainDeployOperationThread( Thread ):
 				else:
 					self.logIt( __name__ + ".logMySelf(): " + str( attr ) + "=" + str( getattr( self, attr ) ) + "\n" )
 				#Endif
-			except AttributeError, e:
+			except AttributeError as e:
 				continue
 			#Endtry
 		#Endfor

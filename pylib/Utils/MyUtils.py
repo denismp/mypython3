@@ -1,4 +1,4 @@
-#!/usr/bin/env jython
+#!/usr/bin/env python
 ######################################################################################
 ##	MyUtils.py
 ##
@@ -12,133 +12,139 @@
 import time
 import platform
 import re
-try: set
-except NameError: from sets import Set as set
+
+
+# try: set
+# except NameError: from sets import Set as set
 
 class MyUtils:
-	"""MyUtils class that provides some useful utilities."""
+    """MyUtils class that provides some useful utilities."""
 
-	##################################################################################
-	#	__init__()
-	#
-	#	DESCRIPTION:
-	#		Class initializer.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	#		An instance of this class
-	##################################################################################
-	def __init__(self):
-		"""Initializer."""
-	##################################################################################
-	#	Enddef
-	##################################################################################
+    ##################################################################################
+    #	__init__()
+    #
+    #	DESCRIPTION:
+    #		Class initializer.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    #		An instance of this class
+    ##################################################################################
+    def __init__(self):
+        """Initializer."""
 
-	##################################################################################
-	#	getPlatform()
-	#
-	#	DESCRIPTION:
-	#		Get the system platform.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	#		The platform name
-	##################################################################################
-	def getPlatform(self):
-		"""
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	getPlatform()
+    #
+    #	DESCRIPTION:
+    #		Get the system platform.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    #		The platform name
+    ##################################################################################
+    def getPlatform(self):
+        """
            Get the system platform.
            PARAMETERS:
 
            RETURN:
                value
-		"""
-		##############################################################################
-		#	The platform string looks something like:
-		#	platform=Java-1.5.0_13-Java_HotSpot-TM-_Server_VM,_1.5.0_13-b05,_Sun_Microsystems_Inc.-on-Linux-2.6.18-92.el5-i386
-		##############################################################################
-		fullInfo = platform.platform()
-		ar = re.split('-on-', fullInfo)	# split on the '-on-'
-		ar = re.split('-', ar[1])			# split on the '-'
-		value = ar[0].lower()				# take the first token and lower case it.
-		return value
-	##################################################################################
-	#	Enddef
-	##################################################################################
+        """
+        ##############################################################################
+        #	The platform string looks something like:
+        #	platform=Java-1.5.0_13-Java_HotSpot-TM-_Server_VM,_1.5.0_13-b05,_Sun_Microsystems_Inc.-on-Linux-2.6.18-92.el5-i386
+        #   NOTE:  This code was originally written in jython 2.7
+        ##############################################################################
+        fullInfo = platform.platform()
+        ar = re.split('-on-', fullInfo)  # split on the '-on-'
+        ar = re.split('-', ar[1])  # split on the '-'
+        value = ar[0].lower()  # take the first token and lower case it.
+        return value
 
-	##################################################################################
-	#	calcArgsvIndex()
-	#
-	#	DESCRIPTION:
-	#		Calculate the INDEX value to be used in the getopt.getopt( sys.argv[INDEX:], .... )
-	#
-	#	PARAMETERS:
-	#		see below.
-	#
-	#	RETURN:
-	#		INDEX
-	##################################################################################
-	def calcArgsvIndex(self, argv0=None, programName=None):
-		"""
-	       Calculate the INDEX value to be used in the getopt.getopt( sys.argv[INDEX:], .... )
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	calcArgsvIndex()
+    #
+    #	DESCRIPTION:
+    #		Calculate the INDEX value to be used in the getopt.getopt( sys.argv[INDEX:], .... )
+    #
+    #	PARAMETERS:
+    #		see below.
+    #
+    #	RETURN:
+    #		INDEX
+    ##################################################################################
+    def calcArgsvIndex(self, argv0=None, programName=None):
+        """
+           Calculate the INDEX value to be used in the getopt.getopt( sys.argv[INDEX:], .... )
            PARAMETERS:
                argv0       - the value of sys.argv[0]
-			   programName - the name of the calling program.
+               programName - the name of the calling program.
 
            RETURN:
                value
-		"""
-		INDEX		 = 1
-		firstArg 	 = ''
+        """
+        INDEX = 1
+        firstArg = ''
 
-		###############################################
-		#	Determine if were called from the command
-		#	line or from wsadmin.sh or some other
-		#	script that strips off argv[0].
-		###############################################
-		#print "platform=" + str( self.getPlatform() )
-		#print "thisprogram=" + str( programName )
-		try:
-			firstArg = argv0
-			#print "firstArg=" + str( firstArg )
-			if firstArg != programName:
-				INDEX = 0
-		except IndexError, e:
-			print e
-		#Endtry
+        ###############################################
+        #	Determine if were called from the command
+        #	line or from wsadmin.sh or some other
+        #	script that strips off argv[0].
+        ###############################################
+        # print "platform=" + str( self.getPlatform() )
+        # print "thisprogram=" + str( programName )
+        try:
+            firstArg = argv0
+            # print "firstArg=" + str( firstArg )
+            if firstArg != programName:
+                INDEX = 0
+        except IndexError as e:
+            print(e)
+        # Endtry
 
-		##############################################
-		#	For now we will assume that the linux
-		#	platform is always 1.  This may change
-		#	later.
-		##############################################
-		if self.getPlatform() == 'linux':
-			INDEX = 1
-		#print "INDEX=" + str( INDEX )
-		return INDEX
-	##################################################################################
-	#	Enddef
-	##################################################################################
+        ##############################################
+        #	For now we will assume that the linux
+        #	platform is always 1.  This may change
+        #	later.
+        ##############################################
+        if self.getPlatform() == 'linux':
+            INDEX = 1
+        # print "INDEX=" + str( INDEX )
+        return INDEX
 
-	##################################################################################
-	#	uniquer()
-	#
-	#	DESCRIPTION:
-	#		Remove duplicates from a sequence while maintaining sequence order.
-	#
-	#	PARAMETERS:
-	#		seq - the sequence to be made unique.
-	#		f   - defines an equivalence relation among items of sequence, seq, and
-	#			  f(x) must be hashable for each item x for the seq.
-	#
-	#	RETURN:
-	#		result
-	##################################################################################
-	def uniquer(self, seq, f=None):
-		"""
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	uniquer()
+    #
+    #	DESCRIPTION:
+    #		Remove duplicates from a sequence while maintaining sequence order.
+    #
+    #	PARAMETERS:
+    #		seq - the sequence to be made unique.
+    #		f   - defines an equivalence relation among items of sequence, seq, and
+    #			  f(x) must be hashable for each item x for the seq.
+    #
+    #	RETURN:
+    #		result
+    ##################################################################################
+    def uniquer(self, seq, f=None):
+        """
            Remove duplicates from a sequence while maintaining sequence order.
-		   Keeps earliest occuring item of each f-defined equivalence class.
+           Keeps earliest occuring item of each f-defined equivalence class.
            PARAMETERS:
                seq - the sequence to be made unique.
                f   - defines an equivalence relation among items of sequence, seq, and
@@ -146,165 +152,172 @@ class MyUtils:
 
            RETURN:
                result sequence
-		"""
-		#print( __name__ + ".uniquer(): seq=" + str( seq ) + '\n' )
-		#print( __name__ + ".uniquer(): f=" + str( f ) + '\n' )
+        """
+        # print( __name__ + ".uniquer(): seq=" + str( seq ) + '\n' )
+        # print( __name__ + ".uniquer(): f=" + str( f ) + '\n' )
 
-		try:
-			if f is None:	# f's default is the identity function f(x) -> x
-				def f(x): return x
-			#Endif
-		except Exception, e:
-			print(__name__ + ".uniquer(): call to f(x) failed:" + str(e) + '\n')
-			print(__name__ + ".uniquer(): seq=" + str(seq) + '\n')
-			print(__name__ + ".uniquer(): f=" + str(f) + '\n')
-			raise
-		#Endtry
+        try:
+            if f is None:  # f's default is the identity function f(x) -> x
+                def f(x): return x
+        # Endif
+        except Exception as e:
+            print((__name__ + ".uniquer(): call to f(x) failed:" + str(e) + '\n'))
+            print((__name__ + ".uniquer(): seq=" + str(seq) + '\n'))
+            print((__name__ + ".uniquer(): f=" + str(f) + '\n'))
+            raise
+        # Endtry
 
-		already_seen = set()
-		result = []
+        already_seen = set()
+        result = []
 
-		try:
-			for item in seq:
-				marker = f(item)
-				if marker not in already_seen:
-					already_seen.add(marker)
-					result.append(item)
-				#Endif
-			#Endfor
-		except Exception, e:
-			print(__name__ + ".uniquer(): Parse of seq failed:" + str(e) + '\n')
-			print(__name__ + ".uniquer(): seq=" + str(seq) + '\n')
-			print(__name__ + ".uniquer(): f=" + str(f) + '\n')
-			raise
-		#Endtry
+        try:
+            for item in seq:
+                marker = f(item)
+                if marker not in already_seen:
+                    already_seen.add(marker)
+                    result.append(item)
+        # Endif
+        # Endfor
+        except Exception as e:
+            print((__name__ + ".uniquer(): Parse of seq failed:" + str(e) + '\n'))
+            print((__name__ + ".uniquer(): seq=" + str(seq) + '\n'))
+            print((__name__ + ".uniquer(): f=" + str(f) + '\n'))
+            raise
+        # Endtry
 
-		#print( __name__ + ".uniquer(): already_seen=" + str( already_seen ) + '\n' )
-		#print( __name__ + ".uniquer(): result=" + str( result ) + '\n' )
-		return result
+        # print( __name__ + ".uniquer(): already_seen=" + str( already_seen ) + '\n' )
+        # print( __name__ + ".uniquer(): result=" + str( result ) + '\n' )
+        return result
 
-	##################################################################################
-	#	Enddef
-	##################################################################################
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
 
-	##################################################################################
-	#	mytime()
-	#
-	#	DESCRIPTION:
-	#		Get the current time.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	#		curent time
-	##################################################################################
-	def mytime(self):
-		"""Get the current time as YYYYMMDD_HH:MM:SS format.
+    ##################################################################################
+    #	mytime()
+    #
+    #	DESCRIPTION:
+    #		Get the current time.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    #		curent time
+    ##################################################################################
+    def mytime(self):
+        """Get the current time as YYYYMMDD_HH:MM:SS format.
            RETURN:
               The time string.
-		"""
-		mytime = time.localtime()
-		mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
-		return mytimestr
-	##################################################################################
-	#	Enddef
-	##################################################################################
+        """
+        mytime = time.localtime()
+        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
+        return mytimestr
 
-	##################################################################################
-	#	mktime()
-	#
-	#	DESCRIPTION:
-	#		Get the current time.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	#		time
-	##################################################################################
-	def mktime(self, secs):
-		"""Make the given secs into a string in the YYYYMMDD_HH:MM:SS format.
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	mktime()
+    #
+    #	DESCRIPTION:
+    #		Get the current time.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    #		time
+    ##################################################################################
+    def mktime(self, secs):
+        """Make the given secs into a string in the YYYYMMDD_HH:MM:SS format.
            RETURN:
               The time string.
-		"""
-		mytime = time.localtime(secs)
-		mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
-		return mytimestr
-	##################################################################################
-	#	Enddef
-	##################################################################################
+        """
+        mytime = time.localtime(secs)
+        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
+        return mytimestr
 
-	##################################################################################
-	#	closeMe()
-	#
-	#	DESCRIPTION:
-	#		Closes this instance.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	##################################################################################
-	def closeMe(self):
-		"""Closes this instance."""
-		pass
-	##################################################################################
-	#	Enddef
-	##################################################################################
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
 
-	##################################################################################
-	#	__del__()
-	#
-	#	DESCRIPTION:
-	#		Destructor
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	##################################################################################
-	def __del__(self):
-		"""Closes this instance."""
-		self.closeMe()
-	##################################################################################
-	#	Enddef
-	##################################################################################
+    ##################################################################################
+    #	closeMe()
+    #
+    #	DESCRIPTION:
+    #		Closes this instance.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    ##################################################################################
+    def closeMe(self):
+        """Closes this instance."""
+        pass
 
-	##################################################################################
-	#	Endclass
-	##################################################################################
+    ##################################################################################
+    #	Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	__del__()
+    #
+    #	DESCRIPTION:
+    #		Destructor
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    ##################################################################################
+    def __del__(self):
+        """Closes this instance."""
+        self.closeMe()
+##################################################################################
+#	Enddef
+##################################################################################
+
+##################################################################################
+#	Endclass
+##################################################################################
+
 
 def myf(x):
-	mykey = x.keys()[0]
-	myvalue = x.get(mykey)
-	return mykey + ":" + myvalue
-	#Enddef
+    mykey = list(x.keys())[0]
+    myvalue = x.get(mykey)
+    return mykey + ":" + myvalue
+
+
+# Enddef
 
 def main():
-	import sys
-	myObject = MyUtils();
-	print(myObject.mytime())
-	mylist = [ 'a', 'a', 'b', 'b', 'c' ]
-	newlist = myObject.uniquer(mylist)
-	print mylist, "\n"
-	print newlist, "\n"
-	print myObject.getPlatform()
-	INDEX = myObject.calcArgsvIndex(argv0=sys.argv[0], programName=__name__)
-	print "INDEX=" + str(INDEX)
-	INDEX = myObject.calcArgsvIndex(argv0=sys.argv[0], programName="MyUtils.py")
-	print "INDEX=" + str(INDEX)
+    import sys
+    myObject = MyUtils();
+    print((myObject.mytime()))
+    mylist = ['a', 'a', 'b', 'b', 'c']
+    newlist = myObject.uniquer(mylist)
+    print(mylist, "\n")
+    print(newlist, "\n")
+    print(myObject.getPlatform())
+    INDEX = myObject.calcArgsvIndex(argv0=sys.argv[0], programName=__name__)
+    print("INDEX=" + str(INDEX))
+    INDEX = myObject.calcArgsvIndex(argv0=sys.argv[0], programName="MyUtils.py")
+    print("INDEX=" + str(INDEX))
 
-	myar = list()
-	myar.append({ "host1": "01" })
-	myar.append({ "host1": "01" })
-	myar.append({ "host2": "02" })
-	myar.append({ "host2": "02" })
+    myar = list()
+    myar.append({"host1": "01"})
+    myar.append({"host1": "01"})
+    myar.append({"host2": "02"})
+    myar.append({"host2": "02"})
 
-	myres = myObject.uniquer(myar, myf)
-	print myres
-	myObject.closeMe();
-	#	Enddef
+    myres = myObject.uniquer(myar, myf)
+    print(myres)
+    myObject.closeMe();
+
+
+#	Enddef
 
 #########################################
 #   End
 #########################################
 if __name__ == "__main__":
-	main()
-
+    main()

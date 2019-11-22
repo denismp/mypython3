@@ -16,17 +16,18 @@
 #########################################
 #    Import section.
 #########################################
-import getopt, sys #@UnusedImport
-import os, socket #@UnusedImport
-from stat import *  #@UnusedWildImport
-from pylib.Utils.MyLogger import * #@UnusedWildImport
-#from pylib.Utils.MySocket import * #@UnusedWildImport
-from pylib.Tasks.FileTask import * #@UnusedWildImport
+import getopt, sys  # @UnusedImport
+import os, socket  # @UnusedImport
+from stat import *  # @UnusedWildImport
+from pylib.Utils.MyLogger import *  # @UnusedWildImport
+# from pylib.Utils.MySocket import * #@UnusedWildImport
+from pylib.Tasks.FileTask import *  # @UnusedWildImport
 
 #########################################
 #    Global variables.
 #########################################
 CONFIG = {}
+
 
 #########################################
 #    Function definitions.
@@ -45,17 +46,18 @@ CONFIG = {}
 def initialize():
     """Initialize this module."""
     mytime = time.localtime()
-    mytimestr = time.strftime("%Y%m%d-%H_%M_%S", mytime);
+    mytimestr = time.strftime("%Y%m%d-%H_%M_%S", mytime)
 
-    #CONFIG['logfile'    ]        = "/tmp/mywas.log"
-    CONFIG['thisprogram'    ] = os.path.basename(sys.argv[0])
-    CONFIG['number'         ] = 0
-    CONFIG['host'           ] = 'localhost'
-    CONFIG['port'           ] = 50007
-    CONFIG['logfile'        ] = "/tmp/" + CONFIG['thisprogram'] + "_" + mytimestr + ".log"
-    #CONFIG['logfile'       ]        = CONFIG['thisprogram'] + ".log"
-    CONFIG['stdout'         ] = False
-    CONFIG['debug'          ] = False
+    # CONFIG['logfile'    ]        = "/tmp/mywas.log"
+    CONFIG['thisprogram'] = os.path.basename(sys.argv[0])
+    CONFIG['number'] = 0
+    CONFIG['host'] = 'localhost'
+    CONFIG['port'] = 50007
+    CONFIG['logfile'] = "/tmp/" + CONFIG['thisprogram'] + "_" + mytimestr + ".log"
+    # CONFIG['logfile'       ]        = CONFIG['thisprogram'] + ".log"
+    CONFIG['stdout'] = False
+    CONFIG['debug'] = False
+
 
 #######################################################
 #    Enddef
@@ -75,19 +77,20 @@ def initialize():
 #######################################################
 def resetInit(myopts):
     """Reset the initialize values based on what the user specified on the command line."""
-    for my_opt in myopts.keys():
+    for my_opt in list(myopts.keys()):
         CONFIG[my_opt] = myopts[my_opt]
-        #print( my_opt + '=' + str( CONFIG[my_opt] ) )
-    #Endfor
-    
-    if int( CONFIG['number'] ) > 9999 or int( CONFIG['number'] ) < 0:
-        print "--number is not valid."
+        # print( my_opt + '=' + str( CONFIG[my_opt] ) )
+    # Endfor
+
+    if int(CONFIG['number']) > 9999 or int(CONFIG['number']) < 0:
+        print("--number is not valid.")
         usage()
         sys.exit(2)
-        
+
     CONFIG['utils'] = MyLogger(LOGFILE=CONFIG['logfile'], STDOUT=CONFIG['stdout'], DEBUG=CONFIG['debug']);
 
-    #CONFIG['utils'].logIt( "resetInit(): Here I am.\n" );
+    # CONFIG['utils'].logIt( "resetInit(): Here I am.\n" );
+
 
 #######################################################
 #    Enddef
@@ -107,15 +110,18 @@ def resetInit(myopts):
 def usage():
     """Display the command line usage."""
     usage_string = "oxclient.py\n" + \
-        "\t[-n, --number]   -- NNNN [0-9999] (optional: default is " + str(CONFIG['number']) + ")\n" + \
-        "\t[-H, --host]     -- Something like freedom.dynalis.org(optional: default is " + str(CONFIG['host']) + ")\n" + \
-        "\t[-p, --port]     -- Something like 50007(optional: default is " + str(CONFIG['port']) + ")\n" + \
-        "\t[-l, --logfile]  -- log file(optional: default is " + str(CONFIG['logfile']) + ")\n" + \
-        "\t[-s, --stdout]   -- stdout on.\n" + \
-        "\t[-d, --debug]    -- debug on.\n" + \
-        "\t[-h, --help]     -- show usage.\n\n" + \
-        "oxclient.py --number 9999 --host freedom.dynalis.org --port 50007 --logfile /tmp/oxclient.log --stdout\n"
+                   "\t[-n, --number]   -- NNNN [0-9999] (optional: default is " + str(CONFIG['number']) + ")\n" + \
+                   "\t[-H, --host]     -- Something like freedom.dynalis.org(optional: default is " + str(
+        CONFIG['host']) + ")\n" + \
+                   "\t[-p, --port]     -- Something like 50007(optional: default is " + str(CONFIG['port']) + ")\n" + \
+                   "\t[-l, --logfile]  -- log file(optional: default is " + str(CONFIG['logfile']) + ")\n" + \
+                   "\t[-s, --stdout]   -- stdout on.\n" + \
+                   "\t[-d, --debug]    -- debug on.\n" + \
+                   "\t[-h, --help]     -- show usage.\n\n" + \
+                   "oxclient.py --number 9999 --host freedom.dynalis.org --port 50007 --logfile /tmp/oxclient.log --stdout\n"
     print(usage_string)
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -133,17 +139,19 @@ def usage():
 #######################################################
 def getCmdOptions():
     """Get the command line arguments."""
-    #print( "getCmdOptions() entered...\n )"
+    # print( "getCmdOptions() entered...\n )"
     my_opts = {}
     err = None
-    required_opts = { 'number': True, 'host': True,'port': True, 'help': True, 'debug': True, 'stdout': True, 'logfile': True }
+    required_opts = {'number': True, 'host': True, 'port': True, 'help': True, 'debug': True, 'stdout': True,
+                     'logfile': True}
     rc = 1
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hdsn:H:p:l:", ["help", "debug", "stdout", "number=", "host=", "port=", "logfile="]) #@UnusedVariable
+        opts, args = getopt.getopt(sys.argv[1:], "hdsn:H:p:l:", ["help", "debug", "stdout", "number=", "host=", "port=",
+                                                                 "logfile="])  # @UnusedVariable
     except(getopt.GetoptError, err):
         # print help information and exit:
-        print(str(err)) # will print something like "option -a not recognized"
+        print((str(err)))  # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
 
@@ -167,27 +175,29 @@ def getCmdOptions():
         else:
             rc = 0
             assert False, "unhandled option"
-        #Endif
-    #Endfor
+        # Endif
+    # Endfor
 
-    if(rc == 0):
+    if (rc == 0):
         usage()
 
-    #for k, v in required_opts.iteritem():
-    for k, v in required_opts.items(): #@UnusedVariable
-        if(required_opts[k] == False):
+    # for k, v in required_opts.iteritem():
+    for k, v in list(required_opts.items()):  # @UnusedVariable
+        if (required_opts[k] == False):
             msg = sys.argv[0] + " Must provide: " + "--" + str(k)
             print(msg)
             rc = 0
-        #Endif
-    #Endfor
+        # Endif
+    # Endfor
 
-    if(rc == 0):
+    if (rc == 0):
         usage()
         sys.exit(2)
-    #Endif
+    # Endif
 
     resetInit(my_opts)
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -205,12 +215,14 @@ def getCmdOptions():
 #######################################################
 def printVersionInfo():
     """Print the version and other information about this program."""
-    #pass
+    # pass
     pathname = sys.argv[0]
     myMtime = os.stat(pathname)[ST_MTIME]
     modDate = CONFIG['utils'].mktime(myMtime)
     logIt("Python Script: " + pathname + "\n")
     logIt("Version Date:  " + modDate + "\n")
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -237,6 +249,8 @@ def printInfo():
     logIt("      Log file is: " + str(CONFIG['logfile']) + "\n")
     logIt("   Stdout flag is: " + str(CONFIG['stdout']) + "\n")
     logIt("    Debug flag is: " + str(CONFIG['debug']) + "\n")
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -253,7 +267,9 @@ def printInfo():
 #######################################################
 def logIt(msg):
     """Logs the given message."""
-    utils = CONFIG['utils'].logIt(msg) #@UnusedVariable
+    utils = CONFIG['utils'].logIt(msg)  # @UnusedVariable
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -270,8 +286,10 @@ def logIt(msg):
 #######################################################
 def debug(msg):
     """Logs the given message."""
-    if(CONFIG['debug']):
+    if (CONFIG['debug']):
         logIt(msg)
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -290,18 +308,19 @@ def getFillerData():
     """Get the filler data for the test.  Reads 2000 bytes
        from the filler.txt file.
     """
-    filler    = ""
-    fileName  = "filler.txt"
-    
+    filler = ""
+    fileName = "filler.txt"
+
     try:
-        FH = open( fileName, "r" )
-        filler = FH.read( 2000 )
+        FH = open(fileName, "r")
+        filler = FH.read(2000)
         FH.close()
         return filler
-    except IOError, inst: #@UnusedVariable
+    except IOError as inst:  # @UnusedVariable
         raise
-    #Endtry
- 
+    # Endtry
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -318,22 +337,23 @@ def getFillerData():
 #######################################################
 def requestServerFile(filler):
     """Request the file from the server."""
-    s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
-    s.connect( ( CONFIG['host'], CONFIG['port'] ) )
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((CONFIG['host'], CONFIG['port']))
 
-    debug( 'requestServerFile(): Before msgNum=' + str( CONFIG['number'] )  + "\n" )    
-    msgNum = socket.htonl(long( str( CONFIG['number'] ) ) )
-    debug( 'requestServerFile(): After msgNum=' + str( msgNum ) + "\n" )
+    debug('requestServerFile(): Before msgNum=' + str(CONFIG['number']) + "\n")
+    msgNum = socket.htonl(int(str(CONFIG['number'])))
+    debug('requestServerFile(): After msgNum=' + str(msgNum) + "\n")
     if True:
-        s.send( str( msgNum ).encode() )
-        s.send( filler.encode() )
+        s.send(str(msgNum).encode())
+        s.send(filler.encode())
         data = "XXX"
         while data != "":
-            data = s.recv( 2048 )
+            data = s.recv(2048)
             if data != "":
-                print 'Received', repr(data)
+                print('Received', repr(data))
         s.close()
-        #print 'Received', repr(data)
+        # print 'Received', repr(data)
+
 
 #######################################################
 #    Enddef
@@ -352,15 +372,16 @@ def requestServerFile(filler):
 #######################################################
 def doWork():
     """Do all the real work for this program."""
-    #rVal    = True
+    # rVal    = True
     rc = 0
     printInfo()
-    
+
     filler = getFillerData()
-    #debug( "doWork(): filler = " + filler )
-    requestServerFile( filler )
+    # debug( "doWork(): filler = " + filler )
+    requestServerFile(filler)
 
     return rc
+
 
 #######################################################
 #    Enddef
@@ -378,6 +399,8 @@ def doWork():
 def cleanUp():
     """Do any clean up required for this program."""
     pass
+
+
 #######################################################
 #    Enddef
 #######################################################
@@ -394,7 +417,7 @@ def cleanUp():
 #######################################################
 def main():
     """The entry point into this program."""
-    #print( "main() entered..." )
+    # print( "main() entered..." )
     initialize()
     getCmdOptions()
     printVersionInfo()
@@ -403,6 +426,8 @@ def main():
 
     cleanUp()
     sys.exit(rc)
+
+
 #######################################################
 #    Enddef
 #######################################################

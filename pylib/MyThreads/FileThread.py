@@ -1,4 +1,4 @@
-#!/usr/bin/env jython
+#!/usr/bin/env python
 ######################################################################################
 ##    FileThread.py
 ##
@@ -9,19 +9,20 @@
 ##    DATE        WHOM                DESCRIPTION
 ##    02/12/2010    Denis M. Putnam        Created.
 ######################################################################################
-import os, sys #@UnusedImport
-import re #@UnusedImport
-import socket #@UnusedImport
-import time #@UnusedImport
+import os, sys  # @UnusedImport
+import re  # @UnusedImport
+import socket  # @UnusedImport
+import time  # @UnusedImport
 import random
-from subprocess import * #@UnusedWildImport
+from subprocess import *  # @UnusedWildImport
 from threading import Thread
-from pylib.Utils.MyLogger import * #@UnusedWildImport
-from pylib.Utils.MyUtils import * #@UnusedWildImport
-from pylib.Utils.MySocket import * #@UnusedWildImport
-import posixfile
-
+from pylib.Utils.MyLogger import *  # @UnusedWildImport
+from pylib.Utils.MyUtils import *  # @UnusedWildImport
+from pylib.Utils.MySocket import *  # @UnusedWildImport
+# import posixfile # this has been deprecated.
+import fcntl
 random.seed(time.localtime())
+
 
 class FileThread(Thread):
     """FileThread class extends the Thread class to serve up a file in a thread."""
@@ -39,14 +40,14 @@ class FileThread(Thread):
     #        An instance of this class
     ##################################################################################
     def __init__(
-                self,
-                mySocketObj,
-                socketConn,
-                recvData,
-                statusFile,
-                threadName=None,
-                logger=None
-        ):
+            self,
+            mySocketObj,
+            socketConn,
+            recvData,
+            statusFile,
+            threadName=None,
+            logger=None
+    ):
         """Class Initializer.
            PARAMETERS:
                mySocketObj   - An instance of the pylib.Utils.MySocket class.
@@ -60,21 +61,21 @@ class FileThread(Thread):
                An instance of this class
         """
 
-        Thread.__init__(self, name=threadName)    # Initialize the super.
-        self.logger         = logger
-        self.mySocketObj    = mySocketObj
-        self.socketConn     = socketConn
-        self.recvData       = recvData
-        self.statusFile     = statusFile
-        self.threadName     = threadName
-        self.msgNum         = None
-        self.status         = True
-        self.message        = '\n'
+        Thread.__init__(self, name=threadName)  # Initialize the super.
+        self.logger = logger
+        self.mySocketObj = mySocketObj
+        self.socketConn = socketConn
+        self.recvData = recvData
+        self.statusFile = statusFile
+        self.threadName = threadName
+        self.msgNum = None
+        self.status = True
+        self.message = '\n'
         self.logMySelf()
         self.validate()
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -95,12 +96,12 @@ class FileThread(Thread):
            RETURN:
                True for valid or False.
         """
-        #rVal = False
-        #return rVal
+        # rVal = False
+        # return rVal
         return True
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -123,21 +124,22 @@ class FileThread(Thread):
         myAttrs = dir(self)
         for attr in myAttrs:
             try:
-                #if re.search('__doc__', attr): continue
-                #if re.search('__module__', attr): continue
-                #if re.search('bound method', str(getattr(self, attr))): continue
-                #if re.search('instance', str(getattr(self, attr))): continue
-                if(debugOnly == True):
+                # if re.search('__doc__', attr): continue
+                # if re.search('__module__', attr): continue
+                # if re.search('bound method', str(getattr(self, attr))): continue
+                # if re.search('instance', str(getattr(self, attr))): continue
+                if (debugOnly == True):
                     self.debug(__name__ + ".logMySelf(): " + str(attr) + "=" + str(getattr(self, attr)) + "\n")
                 else:
                     self.logIt(__name__ + ".logMySelf(): " + str(attr) + "=" + str(getattr(self, attr)) + "\n")
-                #Endif
-            except AttributeError, e: #@UnusedVariable
+                # Endif
+            except AttributeError as e:  # @UnusedVariable
                 continue
-            #Endtry
-        #Endfor
+            # Endtry
+        # Endfor
+
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -154,10 +156,10 @@ class FileThread(Thread):
     def logIt(self, msg):
         """Write a message to the log and possibly stdout."""
 
-        if(self.logger): self.logger.logIt(msg)
+        if (self.logger): self.logger.logIt(msg)
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -174,10 +176,10 @@ class FileThread(Thread):
     def debug(self, msg):
         """Write a message to the log and possibly stdout."""
 
-        if(self.logger): self.logger.debug(msg)
+        if (self.logger): self.logger.debug(msg)
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -193,9 +195,10 @@ class FileThread(Thread):
     def closeMe(self):
         """Closes this instance."""
         self.debug(__name__ + ".closeMe(): called.\n")
-        #Endif
+        # Endif
+
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -210,10 +213,11 @@ class FileThread(Thread):
     ##################################################################################
     def __del__(self):
         """Closes this instance."""
-        #self.logIt( __name__ + ".__del__(): called.\n" )
+        # self.logIt( __name__ + ".__del__(): called.\n" )
         self.closeMe()
+
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -228,14 +232,15 @@ class FileThread(Thread):
     ##################################################################################
     def appendMsg(self, msg):
         """Append a string to the self.message string."""
-        #self.message += msg
+        # self.message += msg
         theTime = self.logger.mytime()
-        #self.message += theTime + " " + str( msg )
+        # self.message += theTime + " " + str( msg )
         self.message = str(self.message) + str(theTime) + " " + str(msg)
+
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
-    
+
     ##################################################################################
     #    getFileData()
     #
@@ -255,22 +260,23 @@ class FileThread(Thread):
                data - the data read from the file.
         """
         wData = self.recvData
-        self.logIt( __name__ + ".getMsgNumber(): wData=" + str( wData ) + "\n")
+        self.logIt(__name__ + ".getMsgNumber(): wData=" + str(wData) + "\n")
         msgNum = ""
         msgNum2 = None
-        for i in range( 0, len( str( wData ) ) ):
+        for i in range(0, len(str(wData))):
             if wData is None:
                 break
-            if str( wData[i] ).isdigit():
-                msgNum += str( wData[i] )
+            if str(wData[i]).isdigit():
+                msgNum += str(wData[i])
             else:
                 break
         if msgNum != "":
-            msgNum2 = socket.ntohl(long( str( msgNum ) ) )
+            msgNum2 = socket.ntohl(int(str(msgNum)))
 
         return msgNum2
+
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -293,29 +299,30 @@ class FileThread(Thread):
            RETURN:
                data - the data read from the file.
         """
-        #fileName = "./0000.txt"
-        self.logIt( __name__ + ".getFileData(): data=" + str( self.recvData ) + "\n")
-        msgNum      = self.getMsgNumber()
+        # fileName = "./0000.txt"
+        self.logIt(__name__ + ".getFileData(): data=" + str(self.recvData) + "\n")
+        msgNum = self.getMsgNumber()
         if msgNum is None:
             return ""
-        #fileName    = "%-04.4d" % (msgNum )   + ".txt"
-        fileName    = "./files/" + str( msgNum )
+        # fileName    = "%-04.4d" % (msgNum )   + ".txt"
+        fileName = "./files/" + str(msgNum)
         self.msgNum = msgNum
-        self.logIt( __name__ + ".getFileData(): fileName=" + fileName + "\n" )
+        self.logIt(__name__ + ".getFileData(): fileName=" + fileName + "\n")
         try:
-            FH = open( fileName, "r" )
+            FH = open(fileName, "r")
             data = FH.read()
             FH.close()
-        except IOError, inst:
-            self.logIt( __name__ + ".getFileData(): Unable to open " + fileName + " for write."  + " => " + str( inst.errno ) + ":" + str( inst.strerror ) + "\n" )
+        except IOError as inst:
+            self.logIt(__name__ + ".getFileData(): Unable to open " + fileName + " for write." + " => " + str(
+                inst.errno) + ":" + str(inst.strerror) + "\n")
             raise
-        #Endtry
+        # Endtry
         return data
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
-    
+
     ##################################################################################
     #    updateCounts()
     #
@@ -335,57 +342,59 @@ class FileThread(Thread):
                
         """
         found = False
-        fileName    = "counts"
-        if not os.access( fileName, os.F_OK ):
+        fileName = "counts"
+        if not os.access(fileName, os.F_OK):
             try:
-                TFH = open( fileName, "w" )
+                TFH = open(fileName, "w")
                 TFH.close()
-            except IOError, inst: #@UnusedVariable
-                self.logIt( __name__ + ".updateCounts(): Unable to open " + fileName + " for write."  + " => " + str( inst.errno ) + ":" + str( inst.strerror ) + "\n" )
+            except IOError as inst:  # @UnusedVariable
+                self.logIt(__name__ + ".updateCounts(): Unable to open " + fileName + " for write." + " => " + str(
+                    inst.errno) + ":" + str(inst.strerror) + "\n")
                 raise
-            
-        self.logIt( __name__ + ".updateCounts(): fileName=" + fileName + "\n" )
+
+        self.logIt(__name__ + ".updateCounts(): fileName=" + fileName + "\n")
         try:
-            FH = posixfile.open( fileName, "rb+" )
+            FH = open(fileName, "rb+")
+            # FH = posixfile.open(fileName, "rb+") # posixfile has been deprecated.
             FH.lock('w|')
             data = None
             while 1:
                 data = FH.readline()
                 if data is None or data == "": break
-                data = re.sub( "\n", "", data )
-                self.debug(__name__ + ".updateCounts(): data is " + str( data ) + "\n")
-                ms = str( self.msgNum ) + "="
-                self.debug(__name__ + ".updateCounts(): ms is" + str( ms ) + "\n")
+                data = re.sub("\n", "", data)
+                self.debug(__name__ + ".updateCounts(): data is " + str(data) + "\n")
+                ms = str(self.msgNum) + "="
+                self.debug(__name__ + ".updateCounts(): ms is" + str(ms) + "\n")
                 if re.search(ms, data):
-                    found = True 
+                    found = True
                     self.debug(__name__ + ".updateCounts(): DEBUG0.5\n")
                     break
             self.debug(__name__ + ".updateCounts(): DEBUG1\n")
             if data and found:
                 self.debug(__name__ + ".updateCounts(): DEBUG2\n")
                 eloc = FH.tell()
-                self.debug(__name__ + ".updateCounts(): eloc=" + str( eloc ) + "\n")
-                sloc = eloc - len( data ) - 1
-                self.debug(__name__ + ".updateCounts(): sloc=" + str( sloc ) + "\n")
-                FH.seek( sloc, os.SEEK_SET )
+                self.debug(__name__ + ".updateCounts(): eloc=" + str(eloc) + "\n")
+                sloc = eloc - len(data) - 1
+                self.debug(__name__ + ".updateCounts(): sloc=" + str(sloc) + "\n")
+                FH.seek(sloc, os.SEEK_SET)
                 cloc = FH.tell()
-                self.debug(__name__ + ".updateCounts(): cloc=" + str( cloc ) + "\n")
+                self.debug(__name__ + ".updateCounts(): cloc=" + str(cloc) + "\n")
                 myList = list()
                 myList = data.split('=')
-                icount = int( myList[1] ) + 1
-                FH.write( str( self.msgNum ) + "=" + str( icount ) + "\n" )
+                icount = int(myList[1]) + 1
+                FH.write(str(self.msgNum) + "=" + str(icount) + "\n")
             else:
                 self.debug(__name__ + ".updateCounts(): DEBUG3\n")
-                FH.write( str( self.msgNum ) + "=1"  + "\n" )
+                FH.write(str(self.msgNum) + "=1" + "\n")
             FH.lock('u')
             FH.close()
-        except IOError, inst: #@UnusedVariable
+        except IOError as inst:  # @UnusedVariable
             pass
-            #self.logIt( __name__ + ".updateCounts(): Unable to open " + fileName + " for write."  + " => " + str( inst.errno ) + ":" + str( inst.strerror ) + "\n" )
-        #Endtry
+            # self.logIt( __name__ + ".updateCounts(): Unable to open " + fileName + " for write."  + " => " + str( inst.errno ) + ":" + str( inst.strerror ) + "\n" )
+        # Endtry
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -410,9 +419,9 @@ class FileThread(Thread):
         self.debug(__name__ + ".run(): self.recvData=" + str(self.recvData) + "\n")
         self.debug(__name__ + ".run(): self.socketConn=" + str(self.socketConn) + "\n")
 
-        status      = True
-        data        = self.getFileData()
-        self.mySocketObj.serverSend( self.socketConn, data )
+        status = True
+        data = self.getFileData()
+        self.mySocketObj.serverSend(self.socketConn, data)
         if self.socketConn: self.socketConn.close()
         self.updateCounts()
         self.status = status
@@ -420,10 +429,10 @@ class FileThread(Thread):
             self.appendMsg(__name__ + ".run(): Completed successfully for " + str(self.threadName) + "\n")
         else:
             self.appendMsg(__name__ + ".run(): Failed for " + str(self.threadName) + "\n")
-        #Endif
+        # Endif
 
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
     ##################################################################################
@@ -441,37 +450,38 @@ class FileThread(Thread):
         if msg is not None: self.logIt(__name__ + ".terminate(): " + str(msg) + '\n')
         sys.exit()
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
 
+
 ######################################################################################
-#Endclass
+# Endclass
 ######################################################################################
 
 #########################################################################
 #    For testing.
 #########################################################################
 def main():
-    myLogger    = MyLogger(LOGFILE="/tmp/FileThread.log", STDOUT=True, DEBUG=True)
-    mySocketObj = MySocket( port=50007, logger=myLogger )
+    myLogger = MyLogger(LOGFILE="/tmp/FileThread.log", STDOUT=True, DEBUG=True)
+    mySocketObj = MySocket(port=50007, logger=myLogger)
     mySocketObj.bindAndListen()
     conn, data = mySocketObj.serverRead(1, packetSize=2048)
 
-    statusFile     = '/tmp/mystatus.txt'
+    statusFile = '/tmp/mystatus.txt'
 
     threadList = []
     for mythread in range(0, 1):
         current = FileThread(
-                                    mySocketObj,
-                                    conn,
-                                    data,
-                                    statusFile + str(mythread + 1),
-                                    threadName='thread_jobid_' + str(mythread) + '_host' + str(mythread + 1),
-                                    logger=myLogger 
-                                    )
+            mySocketObj,
+            conn,
+            data,
+            statusFile + str(mythread + 1),
+            threadName='thread_jobid_' + str(mythread) + '_host' + str(mythread + 1),
+            logger=myLogger
+        )
         threadList.append(current)
         current.start()
-    #Endfor
+    # Endfor
 
     ################################
     #    Join on all the threads.
@@ -481,15 +491,15 @@ def main():
         myLogger.logIt("main(): " + str(mythread) + "\n")
         myLogger.logIt("main(): " + str(mythread.message) + '\n')
         mythread.closeMe()
-    #Endfor
-    
+    # Endfor
+
     ##################################################################################
-    #Enddef
+    # Enddef
     ##################################################################################
+
 
 ######################################################################################
 #   End
 ######################################################################################
 if __name__ == "__main__":
     main()
-

@@ -1,4 +1,4 @@
-#!/usr/bin/env jython
+#!/usr/bin/env python
 ######################################################################################
 ##	DeployDomainComponentsThread.py
 ##
@@ -15,6 +15,10 @@ import socket
 import time
 import random
 from threading import Thread
+
+from traitlets import ObjectName
+from urllib3.contrib._securetransport.bindings import Boolean
+
 from pylib.Utils.MyLogger import *
 from pylib.Utils.MyUtils import *
 from pylib.Was.AdminClient import *
@@ -23,27 +27,27 @@ from pylib.Was.WasObject import *
 from pylib.Was.AdminClient import *
 from pylib.Was.ConfigService import *
 from pylib.Was.AttributeUtils import *
-from java.lang import NullPointerException
-from java.lang import NoClassDefFoundError
-from java.lang import String
-from java.lang import Boolean
-from javax.management import InstanceNotFoundException
-from javax.management import MalformedObjectNameException
-from javax.management import ObjectName
-from com.ibm.websphere.management.application import AppManagement
-from com.ibm.websphere.management.application import AppConstants
-from com.ibm.websphere.management.application import AppManagementProxy
-from com.ibm.websphere.management import Session
-from com.ibm.websphere.management.exception import AdminException
-from com.ibm.websphere.management.configservice import ConfigServiceHelper
+# from java.lang import NullPointerException
+# from java.lang import NoClassDefFoundError
+# from java.lang import String
+# from java.lang import Boolean
+# from javax.management import InstanceNotFoundException
+# from javax.management import MalformedObjectNameException
+# from javax.management import ObjectName
+# from com.ibm.websphere.management.application import AppManagement
+# from com.ibm.websphere.management.application import AppConstants
+# from com.ibm.websphere.management.application import AppManagementProxy
+# from com.ibm.websphere.management import Session
+# from com.ibm.websphere.management.exception import AdminException
+# from com.ibm.websphere.management.configservice import ConfigServiceHelper
 #from com.ibm.websphere.management.application.client import AppDeploymentController
 #from com.ibm.websphere.management.application.client import AppDeploymentTask
 #from com.ibm.websphere.management.application import AppNotification
 
-import com.ibm.websphere.security.WebSphereRuntimePermission as WebSphereRuntimePermission
-import com.ibm.websphere.security.auth.WSLoginFailedException as WSLoginFailedException
-import com.ibm.ws.security.util.InvalidPasswordDecodingException as InvalidPasswordDecodingException
-import com.ibm.websphere.management.exception.ConnectorException as ConnectorException
+# import com.ibm.websphere.security.WebSphereRuntimePermission as WebSphereRuntimePermission
+# import com.ibm.websphere.security.auth.WSLoginFailedException as WSLoginFailedException
+# import com.ibm.ws.security.util.InvalidPasswordDecodingException as InvalidPasswordDecodingException
+# import com.ibm.websphere.management.exception.ConnectorException as ConnectorException
 
 class DeployDomainComponentsThread( Thread ):
 	"""DeployDomainComponentsThread class extends the Thread class to deploy domain components."""
@@ -209,7 +213,7 @@ class DeployDomainComponentsThread( Thread ):
 				else:
 					self.logIt( __name__ + ".logMySelf(): " + str( attr ) + "=" + str( getattr( self, attr ) ) + "\n" )
 				#Endif
-			except AttributeError, e:
+			except AttributeError as e:
 				continue
 			#Endtry
 		#Endfor
@@ -344,7 +348,7 @@ def main():
 		myclient	= adminObject.createSOAPDefault()
 		results		= adminObject.getResults()
 		#adminObject.logResults( results )
-	except Exception, e:
+	except Exception as e:
 		myLogger.logIt( "main(): " + str(e) + "\n" )
 		myLogger.logIt( "main(): Unable to connect to the AdminClient().  Make sure that the WebSphere Server Manager is running.\n" )
 		raise

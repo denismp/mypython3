@@ -1,4 +1,4 @@
-#!/usr/bin/env jython
+#!/usr/bin/env python
 ######################################################################################
 ##	ConfigureMNE.py
 ##
@@ -18,32 +18,33 @@ from pylib.Utils.MyLogger import *
 from pylib.Utils.MyUtils import *
 from pylib.MyThreads.ConfigureMNEThread import *
 
-class ConfigureMNE( ):
-	"""ConfigureMNE class to configure the MNE on all the hosts."""
 
-	##################################################################################
-	#	__init__()
-	#
-	#	DESCRIPTION:
-	#		Class initializer.
-	#
-	#	PARAMETERS:
-	#		See below.
-	#
-	#	RETURN:
-	#		An instance of this class
-	##################################################################################
-	def __init__(
-				self, 
-				jobid,
-				ampid,
-				domain,
-				mne,
-				statusFileHome,
-				hostDict,
-				logger=None
-		):
-		"""Class Initializer.
+class ConfigureMNE():
+    """ConfigureMNE class to configure the MNE on all the hosts."""
+
+    ##################################################################################
+    #	__init__()
+    #
+    #	DESCRIPTION:
+    #		Class initializer.
+    #
+    #	PARAMETERS:
+    #		See below.
+    #
+    #	RETURN:
+    #		An instance of this class
+    ##################################################################################
+    def __init__(
+            self,
+            jobid,
+            ampid,
+            domain,
+            mne,
+            statusFileHome,
+            hostDict,
+            logger=None
+    ):
+        """Class Initializer.
            PARAMETERS:
                jobid          - autosys jobid.
                ampid          - AMP ID.
@@ -55,282 +56,289 @@ class ConfigureMNE( ):
 
            RETURN:
                An instance of this class
-		"""
-		self.logger		= logger
-		self.jobid		= jobid
-		self.ampid		= ampid
-		self.mne		= mne
-		self.domain		= domain
-		self.statusFileHome	= statusFileHome
-		self.hostDict	= hostDict
-		self.status		= True
-		self.message	= '\n'
-		self.logMySelf()
-		self.validate()
+        """
+        self.logger = logger
+        self.jobid = jobid
+        self.ampid = ampid
+        self.mne = mne
+        self.domain = domain
+        self.statusFileHome = statusFileHome
+        self.hostDict = hostDict
+        self.status = True
+        self.message = '\n'
+        self.logMySelf()
+        self.validate()
 
-	##################################################################################
-	#Enddef
-	##################################################################################
+    ##################################################################################
+    # Enddef
+    ##################################################################################
 
-	##################################################################################
-	#	validate()
-	#
-	#	DESCRIPTION:
-	#		Validate the parameters and calculated values.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	#		True for valid.
-	##################################################################################
-	def validate(self):
-		"""Validate the parameters and calculated values.
+    ##################################################################################
+    #	validate()
+    #
+    #	DESCRIPTION:
+    #		Validate the parameters and calculated values.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    #		True for valid.
+    ##################################################################################
+    def validate(self):
+        """Validate the parameters and calculated values.
            PARAMETERS:
 
            RETURN:
                True for valid or False.
-		"""
-		rVal = False
-		#return rVal
-		return True
+        """
+        rVal = False
+        # return rVal
+        return True
 
-	##################################################################################
-	#Enddef
-	##################################################################################
+    ##################################################################################
+    # Enddef
+    ##################################################################################
 
-	##################################################################################
-	#	logMySelf()
-	#
-	#	DESCRIPTION:
-	#		Log myself.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	##################################################################################
-	def logMySelf(self, debugOnly=True):
-		"""Log myself.
+    ##################################################################################
+    #	logMySelf()
+    #
+    #	DESCRIPTION:
+    #		Log myself.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    ##################################################################################
+    def logMySelf(self, debugOnly=True):
+        """Log myself.
         PARMETERS:
             debugOnly is either True or False.  A value of True will only log if the
             logger's debug flag is set.
         """
 
-		myAttrs = dir( self )
-		for attr in myAttrs:
-			try:
-				if re.search( '__doc__',  attr ): continue
-				if re.search( '__module__',  attr ): continue
-				if re.search( 'bound method', str( getattr( self, attr ) ) ): continue
-				if re.search( 'instance', str( getattr( self, attr ) ) ): continue
-				if( debugOnly == True ):
-					self.debug( __name__ + ".logMySelf(): " + str( attr ) + "=" + str( getattr( self, attr ) ) + "\n" )
-				else:
-					self.logIt( __name__ + ".logMySelf(): " + str( attr ) + "=" + str( getattr( self, attr ) ) + "\n" )
-				#Endif
-			except AttributeError as e:
-				continue
-			#Endtry
-		#Endfor
-	##################################################################################
-	#Enddef
-	##################################################################################
+        myAttrs = dir(self)
+        for attr in myAttrs:
+            try:
+                if re.search('__doc__', attr): continue
+                if re.search('__module__', attr): continue
+                if re.search('bound method', str(getattr(self, attr))): continue
+                if re.search('instance', str(getattr(self, attr))): continue
+                if (debugOnly == True):
+                    self.debug(__name__ + ".logMySelf(): " + str(attr) + "=" + str(getattr(self, attr)) + "\n")
+                else:
+                    self.logIt(__name__ + ".logMySelf(): " + str(attr) + "=" + str(getattr(self, attr)) + "\n")
+            # Endif
+            except AttributeError as e:
+                continue
 
-	##################################################################################
-	#	logIt()
-	#
-	#	DESCRIPTION:
-	#		Write a message to the log and possibly stdout.
-	#
-	#	PARAMETERS:
-	#		msg - what you want to log.
-	#
-	#	RETURN:
-	##################################################################################
-	def logIt(self, msg):
-		"""Write a message to the log and possibly stdout."""
+    # Endtry
 
-		if( self.logger ): self.logger.logIt( msg )
+    # Endfor
+    ##################################################################################
+    # Enddef
+    ##################################################################################
 
-	##################################################################################
-	#Enddef
-	##################################################################################
+    ##################################################################################
+    #	logIt()
+    #
+    #	DESCRIPTION:
+    #		Write a message to the log and possibly stdout.
+    #
+    #	PARAMETERS:
+    #		msg - what you want to log.
+    #
+    #	RETURN:
+    ##################################################################################
+    def logIt(self, msg):
+        """Write a message to the log and possibly stdout."""
 
-	##################################################################################
-	#	debug()
-	#
-	#	DESCRIPTION:
-	#		Write a message to the log and possibly stdout.
-	#
-	#	PARAMETERS:
-	#		msg - what you want to log.
-	#
-	#	RETURN:
-	#################################################################################
-	def debug(self, msg):
-		"""Write a message to the log and possibly stdout."""
+        if (self.logger): self.logger.logIt(msg)
 
-		if( self.logger ): self.logger.debug( msg )
+    ##################################################################################
+    # Enddef
+    ##################################################################################
 
-	##################################################################################
-	#Enddef
-	##################################################################################
+    ##################################################################################
+    #	debug()
+    #
+    #	DESCRIPTION:
+    #		Write a message to the log and possibly stdout.
+    #
+    #	PARAMETERS:
+    #		msg - what you want to log.
+    #
+    #	RETURN:
+    #################################################################################
+    def debug(self, msg):
+        """Write a message to the log and possibly stdout."""
 
-	##################################################################################
-	#	closeMe()
-	#
-	#	DESCRIPTION:
-	#		Closes this instance.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	##################################################################################
-	def closeMe(self):
-		"""Closes this instance."""
-		self.debug( __name__ + ".closeMe(): called.\n" )
-		#Endif
-	##################################################################################
-	#Enddef
-	##################################################################################
+        if (self.logger): self.logger.debug(msg)
 
-	##################################################################################
-	#	__del__()
-	#
-	#	DESCRIPTION:
-	#		Really closes this instance.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	##################################################################################
-	def __del__(self):
-		"""Closes this instance."""
-		#self.logIt( __name__ + ".__del__(): called.\n" )
-		self.closeMe()
-	##################################################################################
-	#Enddef
-	##################################################################################
+    ##################################################################################
+    # Enddef
+    ##################################################################################
 
-	##################################################################################
-	#	appendMsg()
-	#
-	#	DESCRIPTION:
-	#		Append a string to the self.message string.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	##################################################################################
-	def appendMsg(self,msg):
-		"""Append a string to the self.message string."""
-		self.message += msg
-	##################################################################################
-	#Enddef
-	##################################################################################
+    ##################################################################################
+    #	closeMe()
+    #
+    #	DESCRIPTION:
+    #		Closes this instance.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    ##################################################################################
+    def closeMe(self):
+        """Closes this instance."""
+        self.debug(__name__ + ".closeMe(): called.\n")
 
-	##################################################################################
-	#	configureMNE()
-	#
-	#	DESCRIPTION:
-	#		Configure the MNE on all the hosts.
-	#
-	#	PARAMETERS:
-	#
-	#	RETURN:
-	#		
-	##################################################################################
-	def configureMNE(self,timeout=None):
-		"""Configure the MNE on all the hosts.
+    # Endif
+    ##################################################################################
+    # Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	__del__()
+    #
+    #	DESCRIPTION:
+    #		Really closes this instance.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    ##################################################################################
+    def __del__(self):
+        """Closes this instance."""
+        # self.logIt( __name__ + ".__del__(): called.\n" )
+        self.closeMe()
+
+    ##################################################################################
+    # Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	appendMsg()
+    #
+    #	DESCRIPTION:
+    #		Append a string to the self.message string.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    ##################################################################################
+    def appendMsg(self, msg):
+        """Append a string to the self.message string."""
+        self.message += msg
+
+    ##################################################################################
+    # Enddef
+    ##################################################################################
+
+    ##################################################################################
+    #	configureMNE()
+    #
+    #	DESCRIPTION:
+    #		Configure the MNE on all the hosts.
+    #
+    #	PARAMETERS:
+    #
+    #	RETURN:
+    #
+    ##################################################################################
+    def configureMNE(self, timeout=None):
+        """Configure the MNE on all the hosts.
            PARAMETERS:
 
            RETURN:
-		"""
-		self.debug( __name__ + ".configureMNE(): timeout=" + str( timeout ) + "\n" )
-		self.debug( __name__ + ".configureMNE(): self.jobid=" + str( self.jobid ) + "\n" )
-		self.debug( __name__ + ".configureMNE(): self.ampid=" + str( self.ampid ) + "\n" )
-		self.debug( __name__ + ".configureMNE(): self.mne=" + str( self.mne ) + "\n" )
-		self.debug( __name__ + ".configureMNE(): self.domain=" + str( self.domain ) + "\n" )
-		self.debug( __name__ + ".configureMNE(): self.hostDict=" + str( self.hostDict ) + "\n" )
-		self.debug( __name__ + ".configureMNE(): self.statusFileHome=" + str( self.statusFileHome ) + "\n" )
+        """
+        self.debug(__name__ + ".configureMNE(): timeout=" + str(timeout) + "\n")
+        self.debug(__name__ + ".configureMNE(): self.jobid=" + str(self.jobid) + "\n")
+        self.debug(__name__ + ".configureMNE(): self.ampid=" + str(self.ampid) + "\n")
+        self.debug(__name__ + ".configureMNE(): self.mne=" + str(self.mne) + "\n")
+        self.debug(__name__ + ".configureMNE(): self.domain=" + str(self.domain) + "\n")
+        self.debug(__name__ + ".configureMNE(): self.hostDict=" + str(self.hostDict) + "\n")
+        self.debug(__name__ + ".configureMNE(): self.statusFileHome=" + str(self.statusFileHome) + "\n")
 
-		threadList = []
-		for (host, args) in self.hostDict.iteritems():
-			statusFile	= str( self.statusFileHome ) + '/configureMNE.' + str( self.domain ) + '.' + str( host )
-			current = ConfigureMNEThread( 
-											self.jobid,
-											self.ampid,
-											host,
-											statusFile,
-											self.mne,
-											threadName=str( self.jobid ) + '_' + str( self.ampid ) + '_' + str( host ), 
-											logger=self.logger 
-										)
-			threadList.append( current )
-			current.start()
-		#Endfor
+        threadList = []
+        for (host, args) in self.hostDict.iteritems():
+            statusFile = str(self.statusFileHome) + '/configureMNE.' + str(self.domain) + '.' + str(host)
+            current = ConfigureMNEThread(
+                self.jobid,
+                self.ampid,
+                host,
+                statusFile,
+                self.mne,
+                threadName=str(self.jobid) + '_' + str(self.ampid) + '_' + str(host),
+                logger=self.logger
+            )
+            threadList.append(current)
+            current.start()
+        # Endfor
 
-		################################
-		#	Join on all the threads.
-		################################
-		for mythread in threadList:
-			mythread.join(timeout)
-			if mythread.isAlive():
-				self.status = False
-				self.appendMsg( __name__ + ".configureMNE(): " + str(mythread) + " timed out.\n" )
-				self.logIt( __name__ + ".configureMNE(): " + str(mythread) + " timed out.\n" )
-			#Endif
-			self.logIt( __name__ + ".configureMNE(): " + str(mythread) + "\n" )
-			mythread.closeMe()
-		#Endfor
+        ################################
+        #	Join on all the threads.
+        ################################
+        for mythread in threadList:
+            mythread.join(timeout)
+            if mythread.isAlive():
+                self.status = False
+                self.appendMsg(__name__ + ".configureMNE(): " + str(mythread) + " timed out.\n")
+                self.logIt(__name__ + ".configureMNE(): " + str(mythread) + " timed out.\n")
+            # Endif
+            self.logIt(__name__ + ".configureMNE(): " + str(mythread) + "\n")
+            mythread.closeMe()
+# Endfor
 
-	##################################################################################
-	#Enddef
-	##################################################################################
+##################################################################################
+
+
+# Enddef
+##################################################################################
 
 ######################################################################################
-#Endclass
+# Endclass
 ######################################################################################
 
 #########################################################################
 #	For testing.
 #########################################################################
 def main():
-	myLogger	= MyLogger( LOGFILE="/tmp/ConfigureMNE.log", STDOUT=True, DEBUG=True )
+    myLogger = MyLogger(LOGFILE="/tmp/ConfigureMNE.log", STDOUT=True, DEBUG=True)
 
-	threadList	= []
+    threadList = []
 
-	hostDict= dict()
-	for mythread in range( 0, 3 ):
-		hostName	= 'host' + str( mythread )
-		hostDict[ hostName ] = [ 'arg1', 'arg2', 'arg3' ]
-	#Endfor
+    hostDict = dict()
+    for mythread in range(0, 3):
+        hostName = 'host' + str(mythread)
+        hostDict[hostName] = ['arg1', 'arg2', 'arg3']
+    # Endfor
 
-	jobid		= 'SomeAutoSysId'
-	ampid		= 'SomeAmpId'
-	mne			= 'TRR'
-	#statusFileHome	= '/tmp/stop_all_runable_processes.MYDOMAIN'
-	statusFileHome	= '/tmp'
-	myConfigureMNE = ConfigureMNE(
-									jobid,
-									ampid,
-									'MYDOMAIN',
-									mne,
-									statusFileHome,
-									hostDict,
-									logger=myLogger
-									)
-	myConfigureMNE.configureMNE(timeout=5.0)
-	myLogger.logIt( 'main(): ' + str( myConfigureMNE.message ) )
+    jobid = 'SomeAutoSysId'
+    ampid = 'SomeAmpId'
+    mne = 'TRR'
+    # statusFileHome	= '/tmp/stop_all_runable_processes.MYDOMAIN'
+    statusFileHome = '/tmp'
+    myConfigureMNE = ConfigureMNE(
+        jobid,
+        ampid,
+        'MYDOMAIN',
+        mne,
+        statusFileHome,
+        hostDict,
+        logger=myLogger
+    )
+    myConfigureMNE.configureMNE(timeout=5.0)
+    myLogger.logIt('main(): ' + str(myConfigureMNE.message))
 
-	myConfigureMNE.closeMe()
-	
-	##################################################################################
-	#Enddef
-	##################################################################################
+    myConfigureMNE.closeMe()
+
+
+##################################################################################
+# Enddef
+##################################################################################
 
 ######################################################################################
 #   End
 ######################################################################################
 if __name__ == "__main__":
-	main()
-
+    main()
