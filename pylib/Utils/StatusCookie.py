@@ -234,7 +234,7 @@ class StatusCookie:
         wstr = ar[1]
         myMatch = re.match(r'^([A-Z]{3,3})(\d{7,7})', wstr)
         ccid = myMatch.group(2)
-        return mne
+        return ccid
 
     ##################################################################################
     #	Enddef

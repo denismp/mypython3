@@ -303,7 +303,7 @@ class PostConfigThread(Thread):
 #########################################################################
 def main():
     myLogger = MyLogger(LOGFILE="/tmp/PostConfigThread.log", STDOUT=True, DEBUG=True)
-    mne = 'TRR'
+    mne = 'DMP'
     statusFile = '/tmp/runPOSTCONFIG.MYDOMAIN'
     jobid = 'SomeAutoSysJobId'
     ampid = 'SomeAmpId'

@@ -356,10 +356,10 @@ class FileThread(Thread):
         try:
             FH = open(fileName, "rb+")
             # FH = posixfile.open(fileName, "rb+") # posixfile has been deprecated.
-            FH.lock('w|')
+            # FH.lock('w|')
             data = None
             while 1:
-                data = FH.readline()
+                data = str(FH.readline())
                 if data is None or data == "": break
                 data = re.sub("\n", "", data)
                 self.debug(__name__ + ".updateCounts(): data is " + str(data) + "\n")
@@ -423,7 +423,7 @@ class FileThread(Thread):
         data = self.getFileData()
         self.mySocketObj.serverSend(self.socketConn, data)
         if self.socketConn: self.socketConn.close()
-        self.updateCounts()
+        # self.updateCounts()
         self.status = status
         if status:
             self.appendMsg(__name__ + ".run(): Completed successfully for " + str(self.threadName) + "\n")

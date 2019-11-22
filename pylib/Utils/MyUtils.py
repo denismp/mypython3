@@ -62,11 +62,14 @@ class MyUtils:
         #	platform=Java-1.5.0_13-Java_HotSpot-TM-_Server_VM,_1.5.0_13-b05,_Sun_Microsystems_Inc.-on-Linux-2.6.18-92.el5-i386
         #   NOTE:  This code was originally written in jython 2.7
         ##############################################################################
+        mysystem = platform.system()
+        myname = platform.uname()
+        machine = platform.machine()
         fullInfo = platform.platform()
-        ar = re.split('-on-', fullInfo)  # split on the '-on-'
-        ar = re.split('-', ar[1])  # split on the '-'
-        value = ar[0].lower()  # take the first token and lower case it.
-        return value
+        # ar = re.split('-', fullInfo)  # split on the '-'
+        # ar = re.split('-', ar[1])  # split on the '-'
+        # value = ar[2].lower()  # take the first token and lower case it.
+        return fullInfo
 
     ##################################################################################
     #	Enddef
