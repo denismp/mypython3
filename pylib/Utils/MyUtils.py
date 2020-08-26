@@ -213,7 +213,7 @@ class MyUtils:
               The time string.
         """
         mytime = time.localtime()
-        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
+        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime)
         return mytimestr
 
     ##################################################################################
@@ -237,7 +237,7 @@ class MyUtils:
               The time string.
         """
         mytime = time.localtime(secs)
-        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
+        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime)
         return mytimestr
 
     ##################################################################################
@@ -294,7 +294,7 @@ def myf(x):
 
 def main():
     import sys
-    myObject = MyUtils();
+    myObject = MyUtils()
     print((myObject.mytime()))
     mylist = ['a', 'a', 'b', 'b', 'c']
     newlist = myObject.uniquer(mylist)
@@ -314,7 +314,7 @@ def main():
 
     myres = myObject.uniquer(myar, myf)
     print(myres)
-    myObject.closeMe();
+    myObject.closeMe()
 
 
 #	Enddef

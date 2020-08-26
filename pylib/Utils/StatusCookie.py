@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 ######################################################################################
 ##	StatusCookie.py
 ##
@@ -11,8 +11,10 @@
 ######################################################################################
 import os, sys, re
 # sys.path.append( '/nfs/home4/dmpapp/appd4ec/python' )
-from pylib.Utils.MyLogger import *
-from pylib.Utils.MyUtils import *
+#from pylib.Utils.MyLogger import *
+from pylib.Utils.MyLogger import MyLogger
+#from pylib.Utils.MyUtils import *
+from pylib.Utils.MyUtils import MyUtils
 
 
 class StatusCookie:
@@ -41,8 +43,10 @@ class StatusCookie:
                logger  - instance of the pylib.Utils.MyLogger class
         """
         self.jobname = jobname
-        self.email_dir = self.mkEmailDir(jobname)
-        self.work_dir = self.mkWorkDir(jobname)
+        # self.email_dir = self.mkEmailDir(jobname)
+        self.email_dir = "/tmp"
+        # self.work_dir = self.mkWorkDir(jobname)
+        self.work_dir = "/tmp"
         self.logger = logger
         self.utils = MyUtils()
         self.error_msg = ""
@@ -72,7 +76,8 @@ class StatusCookie:
            RETURNS:
                email_dir string.
         """
-        email_dir = "/nfs/dist/dmp/amp/update/" + self.getMne(jobname) + "/" + self.getEnv(
+        #email_dir = "/nfs/dist/dmp/amp/update/" + self.getMne(jobname) + "/" + self.getEnv(
+        email_dir = "/tmp/" + self.getMne(jobname) + "/" + self.getEnv(
             jobname) + "/" + jobname + "/email"
         return email_dir
 
@@ -101,7 +106,8 @@ class StatusCookie:
            RETURNS:
                work_dir string.
         """
-        work_dir = "/nfs/dist/dmp/amp/update/" + self.getMne(jobname) + "/" + self.getEnv(jobname) + "/" + jobname
+        #work_dir = "/nfs/dist/dmp/amp/update/" + self.getMne(jobname) + "/" + self.getEnv(jobname) + "/" + jobname
+        work_dir = "/tmp/" + self.getMne(jobname) + "/" + self.getEnv(jobname) + "/" + jobname
         return work_dir
 
     ##################################################################################
@@ -287,7 +293,7 @@ class StatusCookie:
     #	PARAMETERS:
     #
     #	RETURN:
-    #		email_dir
+    #		work_dir
     ##################################################################################
     def getWorkDir(self):
         """Get the email directory used to instantiate this instance."""
@@ -306,7 +312,6 @@ class StatusCookie:
     #	PARAMETERS:
     #
     #	RETURN:
-    #		email_dir
     ##################################################################################
     def setLog(self, log):
         """Get the email directory used to instantiate this instance.
@@ -329,7 +334,6 @@ class StatusCookie:
     #		msg - What you want to log.
     #
     #	RETURN:
-    #		email_dir
     ##################################################################################
     def logIt(self, msg):
         """Write a message to the log and possibly stdout."""
@@ -349,7 +353,6 @@ class StatusCookie:
     #		msg - What you want to log.
     #
     #	RETURN:
-    #		email_dir
     ##################################################################################
     def debug(self, msg):
         """Write a message to the log and possibly stdout."""
@@ -391,7 +394,8 @@ class StatusCookie:
         mytime = self.utils.mytime()
         FH = None
         status = status.lower()
-        statusFile = self.email_dir + "/" + type + "." + host + "." + app + "." + str(os.getpid()) + "." + status
+        #statusFile = self.email_dir + "/" + type + "." + host + "." + app + "." + str(os.getpid()) + "." + status
+        statusFile = "/tmp/" + app + "." + str(os.getpid()) + "." + status
 
         try:
             FH = open(statusFile, "a")
@@ -455,16 +459,16 @@ class StatusCookie:
 ##################################################################################
 
 
-def main():
+def main_status_cookie():
     myLogger = MyLogger(LOGFILE="/tmp/StatusCookie.log", STDOUT=True, DEBUG=True)
-    myObject = StatusCookie(jobname="QAMP_UAT0000000_090504130000i", logger=myLogger);
+    myObject = StatusCookie(jobname="QAMP_UAT0000000_090504130000i", logger=myLogger)
     if (myObject is None): print("Failed to create the StatusCookie object.")
     email_dir = myObject.getEmailDir()
     myLogger.logIt("email_dir=" + str(email_dir) + "\n")
     work_dir = myObject.getWorkDir()
     myLogger.logIt("work_dir=" + str(work_dir) + "\n")
     myObject.writeStatus(host="dideploy11", app="StatusCookie", msg="This is a test")
-    myObject.closeMe();
+    myObject.closeMe()
 
 
 #	Enddef
@@ -473,4 +477,4 @@ def main():
 #   End
 #########################################
 if __name__ == "__main__":
-    main()
+    main_status_cookie()

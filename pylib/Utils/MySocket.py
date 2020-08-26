@@ -382,16 +382,19 @@ class MySocket:
 #########################################################################
 #	For testing.
 #########################################################################
-def main():
+def main_my_socket():
     myLogger = MyLogger(LOGFILE="/tmp/MySocket.log", STDOUT=True, DEBUG=False)
     myObject = MySocket(logger=myLogger)
     myObject.logMySelf(debugOnly=False)
     myObject.bindAndListen()
     conn, data = myObject.serverRead(1, packetSize=1024)
     myObject.serverSend(conn, data)
-    conn.close()
+    try:
+        conn.close()
+    except AttributeError as e:
+        print("IGNORED " +  str(e))
 
-    myObject.closeMe();
+    myObject.closeMe()
 
 
 ##################################################################################
@@ -402,4 +405,4 @@ def main():
 #   End
 #########################################
 if __name__ == "__main__":
-    main()
+    main_my_socket()

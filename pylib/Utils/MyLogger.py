@@ -89,7 +89,7 @@ class MyLogger:
     def mytime(self):
         """Get the current time as YYYYMMDD_HH:MM:SS format."""
         mytime = time.localtime()
-        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
+        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime)
         return mytimestr
 
     #	Enddef
@@ -108,7 +108,7 @@ class MyLogger:
     def mktime(self, secs):
         """Get the current time as YYYYMMDD_HH:MM:SS format."""
         mytime = time.localtime(secs)
-        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime);
+        mytimestr = time.strftime("%Y%m%d-%H:%M:%S", mytime)
         return mytimestr
 
     #	Enddef
@@ -201,19 +201,20 @@ class MyLogger:
         try:
             self.closeMe()
         except IOError as inst:
+            print(inst.strerror)
             raise
 #	Enddef
 
 #	Endclass
 
 
-def main():
-    myObject = MyLogger(LOGFILE="/tmp/denis.log", DEBUG=True, STDOUT=True);
+def main_logger():
+    myObject = MyLogger(LOGFILE="/tmp/denis.log", DEBUG=True, STDOUT=True)
     # myObject = MyLogger(LOGFILE="/nfs/dist/dmp/amp/update/UAT/DEV/denis.log", DEBUG=True, STDOUT=True);
     print((myObject.mytime()))
     myObject.logIt("main(): Hello world\n")
     myObject.debug("main(): Debug Hello world\n")
-    myObject.closeMe();
+    myObject.closeMe()
 
 
 #	Enddef
@@ -222,4 +223,4 @@ def main():
 #   End
 #########################################
 if __name__ == "__main__":
-    main()
+    main_logger()

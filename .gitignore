@@ -7,3 +7,4 @@ pylib/XML/__pycache__/**
 *.iws
 *.iml
 *.ipr
+pylib/Tasks/__pycache__/FileTask.cpython-37.pyc
