@@ -14,9 +14,10 @@ import re  # @UnusedImport
 import socket  # @UnusedImport
 import time  # @UnusedImport
 import random  # @UnusedImport
-from pylib.Utils.MyLogger import *  # @UnusedWildImport
-from pylib.Utils.MyUtils import *  # @UnusedWildImport
-from pylib.MyThreads.FileThread import *  # @UnusedWildImport
+from pylib.Utils.MyLogger import MyLogger  # @UnusedWildImport
+from pylib.Utils.MyUtils import MyUtils  # @UnusedWildImport
+from pylib.MyThreads.FileThread import FileThread  # @UnusedWildImport
+from pylib.Utils.MySocket import MySocket
 
 
 class FileTask():
