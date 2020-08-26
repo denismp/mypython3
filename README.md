@@ -27,7 +27,7 @@ Python class for working with sockets.
 ### pylib/MyThreads
 Python classes for threads
 
-#### pylib/FileThreas
+#### pylib/FileThreads
 Python class for dealing with files in a thread.
 
 #### pylib/MyThreads/StopRunanableProcess
