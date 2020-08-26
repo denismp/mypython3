@@ -314,7 +314,7 @@ class Environment():
 #########################################################################
 #	For testing.
 #########################################################################
-def main():
+def main_environment():
     myLogger = MyLogger(LOGFILE="/tmp/Environment.log", STDOUT=True, DEBUG=False)
     myObject = Environment(logger=myLogger)
     myObject.logMySelf(debugOnly=False)
@@ -330,4 +330,4 @@ def main():
 #   End
 #########################################
 if __name__ == "__main__":
-    main()
+    main_environment()

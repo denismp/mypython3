@@ -301,7 +301,7 @@ class FileTask():
 #########################################################################
 #	For testing.
 #########################################################################
-def main():
+def main_file_task():
     myLogger = MyLogger(LOGFILE="/tmp/FileTask.log", STDOUT=True, DEBUG=True)
 
     statusFileHome = '/tmp'
@@ -324,4 +324,4 @@ def main():
 #   End
 ######################################################################################
 if __name__ == "__main__":
-    main()
+    main_file_task()
