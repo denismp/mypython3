@@ -292,7 +292,7 @@ def myf(x):
 
 # Enddef
 
-def main():
+def main_utils():
     import sys
     myObject = MyUtils()
     print((myObject.mytime()))
@@ -323,4 +323,4 @@ def main():
 #   End
 #########################################
 if __name__ == "__main__":
-    main()
+    main_utils()
