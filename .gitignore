@@ -8,3 +8,13 @@ pylib/XML/__pycache__/**
 *.iml
 *.ipr
 pylib/Tasks/__pycache__/FileTask.cpython-37.pyc
+pylib/Tasks/__pycache__/__init__.cpython-37.pyc
+pylib/Tasks/__pycache__/__init__.cpython-37.pyc
+pylib/Tasks/__pycache__/__init__.cpython-37.pyc
+pylib/Tasks/__pycache__/FileTask.cpython-37.pyc
+pylib/Tasks/__pycache__/__init__.cpython-37.pyc
+pylib/Tasks/__pycache__/*
+pylib/Tasks/*
+Tasks/*
+template/__pycache__/*
+pylib/Utils/__pycache__/*

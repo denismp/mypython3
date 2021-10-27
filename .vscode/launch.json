@@ -8,8 +8,10 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
+            "stopOnEntry": true,
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "externalTerminal",
+            "cwd": "${fileDirname}"
         }
     ]
 }
