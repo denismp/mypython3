@@ -17,6 +17,7 @@ def main():
     tmp_obj.logger.fatal("Fatal message")
     tmp_obj.logger.error("Error message")
     tmp_obj.logger.debug("Debug message")
+    tmp_obj.logger.info(f"my_opts={tmp_obj.cmd_opt_obj.my_opts}")
 
 if __name__ == "__main__":
     main()

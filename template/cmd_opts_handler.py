@@ -80,9 +80,9 @@ class CmdOptsHandler():
             #    my_opts['port'] = a
             #    required_opts['port'] = True
             elif o in ("-s", "--stdout"):
-                my_opts['stdout'] = True
+                self.my_opts['stdout'] = True
             elif o in ("-d", "--debug"):
-                my_opts['debug'] = True
+                self.my_opts['debug'] = True
             else:
                 rc = 0
                 assert False, "unhandled option"
