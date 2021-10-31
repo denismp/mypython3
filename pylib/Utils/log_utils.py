@@ -27,4 +27,11 @@ class LogUtils():
             raise ValueError(f"Invalid log level.  It must be one of {self.VALID_LOG_LEVELS}")
         logging.basicConfig(level=log_level,format='%(asctime)s %(levelname)s %(message)s')
         logger = logging.getLogger(logger_name)
+        root = logging.getLogger()
+        if root.handlers:
+            for handler in root.handlers:
+                logger.addHandler(handler)
+                root.removeHandler(handler)
+            
+        logger.propagate = False
         return logger
