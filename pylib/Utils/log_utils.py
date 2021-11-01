@@ -18,7 +18,7 @@ class LogUtils():
         """
             1. All logging propagates to the root logger.  The root logger has it's own handlers and
                configuration.  This propagation can cause duplicate log entries in cloudwatch and on the command line output.
-               2. The very first logger that gets called, sets the logging configuration for the whole application.  The root logger will also log.
+            2. The very first logger that gets called, sets the logging configuration for the whole application.  The root logger will also log.
             3. To overcome this, it is important to configure the root logger BEFORE any logger is called.  You must remove the root handlers,
                set the logging.basicConfig() with the level and the format.
             4. In 2. and 3. above, you must set the configuration for the logging(root) BEFORE you get the logger via the logger = logging.getLogger(logger_name) call. 
