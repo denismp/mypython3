@@ -13,6 +13,7 @@ class Template2():
 
 def main():
     tmp_obj = Template2()
+    print(sys.platform)
     tmp_obj.logger.info("Started...")
     tmp_obj.logger.fatal("Fatal message")
     tmp_obj.logger.error("Error message")
